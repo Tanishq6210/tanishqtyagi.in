@@ -38,5 +38,5 @@ jobs:
           # Remote folder on Hostinger
           server-dir: public_html/
 
-          # Optional: clean remote folder before upload
+          # Optional: clean remote folder before uploading files
           dangerous-clean-slate: true
