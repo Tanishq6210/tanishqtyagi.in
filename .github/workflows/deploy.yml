@@ -36,7 +36,7 @@ jobs:
           local-dir: ./out/
 
           # Remote folder on Hostinger
-          server-dir: public_html
+          server-dir: public_html/
 
           # Optional: clean remote folder before upload
           dangerous-clean-slate: true
