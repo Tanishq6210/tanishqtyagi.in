@@ -33,7 +33,7 @@ jobs:
           password: ${{ secrets.HOSTINGER_FTP_PASS }}
 
           # Local folder to upload
-          local-dir: ./out
+          local-dir: ./out/
 
           # Remote folder on Hostinger
           server-dir: public_html
