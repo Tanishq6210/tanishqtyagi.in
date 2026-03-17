@@ -1,26 +1,146 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+
+  --color-background: #020617; /* slate-950 */
+  --color-surface: #020617;
+  --color-surface-muted: #020617;
+  --color-border-subtle: rgba(148, 163, 184, 0.25);
+  --color-accent: #22c55e; /* emerald-500 */
+  --color-accent-soft: rgba(34, 197, 94, 0.15);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background:
+    radial-gradient(circle at top, rgba(56, 189, 248, 0.12), transparent 55%),
+    radial-gradient(circle at 80% 20%, rgba(34, 197, 94, 0.12), transparent 55%),
+    linear-gradient(to bottom, #020617, #020617);
+  @apply text-slate-100 antialiased;
+  font-family: var(--font-geist-sans), system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", sans-serif;
+}
+
+html[data-theme="light"] body {
+  background: #ffffff;
+  @apply text-slate-900;
+}
+
+/* Light theme typography overrides for better contrast */
+html[data-theme="light"] h1,
+html[data-theme="light"] h2,
+html[data-theme="light"] h3 {
+  @apply text-slate-900;
+}
+
+html[data-theme="light"] .text-slate-50,
+html[data-theme="light"] .text-slate-100,
+html[data-theme="light"] .text-slate-200,
+html[data-theme="light"] .text-slate-300,
+html[data-theme="light"] .text-slate-400 {
+  @apply text-slate-900;
+}
+
+html[data-theme="light"] p,
+html[data-theme="light"] li {
+  @apply text-slate-900;
+}
+
+main {
+  @apply bg-slate-950;
+}
+
+html[data-theme="light"] main {
+  @apply bg-white;
+}
+
+main {
+  @apply bg-slate-950;
+}
+
+.section-container {
+  @apply mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8;
+}
+
+.card {
+  @apply rounded-2xl border border-slate-800/60 bg-slate-900/60 p-6 shadow-lg shadow-black/40 backdrop-blur transform transition-all duration-200 hover:-translate-y-1 hover:border-emerald-500/70 hover:bg-slate-900/90 hover:shadow-emerald-500/20;
+}
+
+html[data-theme="light"] .card {
+  @apply border-slate-200 bg-slate-50 shadow-md shadow-slate-200/80 hover:border-emerald-400 hover:bg-white;
+}
+
+/* Hero Lottie card */
+.lottie-card {
+  @apply bg-transparent;
+}
+
+html[data-theme="light"] .lottie-card {
+  @apply border-emerald-300 bg-transparent shadow-[0_0_30px_rgba(16,185,129,0.28)];
+}
+
+/* Light theme: inputs and textareas use light surfaces */
+html[data-theme="light"] input,
+html[data-theme="light"] textarea {
+  @apply bg-white border-slate-300 text-slate-900 placeholder:text-slate-400;
+}
+
+/* Light theme: dark surface utility overrides used inside contact cards */
+html[data-theme="light"] .bg-slate-950\/80 {
+  @apply bg-slate-100 border border-slate-200 text-slate-900;
+}
+
+.tag-pill {
+  @apply inline-flex cursor-default items-center rounded-full border border-slate-700/80 bg-slate-900/80 px-3 py-1 text-xs font-medium text-slate-200 shadow-sm shadow-black/40 transition-transform transition-colors transition-shadow duration-150 hover:-translate-y-0.5 hover:border-emerald-400 hover:bg-emerald-500/20 hover:text-emerald-200 hover:shadow-md hover:shadow-emerald-500/40;
+}
+
+html[data-theme="light"] .tag-pill {
+  @apply border-slate-200 bg-slate-100 text-slate-700 shadow-none hover:-translate-y-0.5 hover:border-emerald-400 hover:bg-emerald-50 hover:text-emerald-800 hover:shadow-sm hover:shadow-emerald-300/50;
+}
+
+.badge-soft {
+  @apply inline-flex items-center gap-2 rounded-full border border-emerald-500/40 bg-emerald-500/10 px-3 py-1 text-xs font-medium text-emerald-300 shadow-sm shadow-emerald-500/30;
+}
+
+html[data-theme="light"] .badge-soft {
+  @apply border-emerald-300 bg-emerald-50 text-black shadow-none;
+}
+
+/* Light theme: email value in contact card */
+html[data-theme="light"] a[href^="mailto:"] {
+  @apply text-black hover:text-emerald-700;
+}
+
+.nav-link {
+  @apply text-sm font-medium text-slate-300 transition hover:text-emerald-400;
+}
+
+html[data-theme="light"] .nav-link {
+  @apply text-slate-600 hover:text-emerald-500;
+}
+
+.btn-primary {
+  @apply inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-emerald-400 via-emerald-500 to-teal-400 px-5 py-2.5 text-sm font-semibold text-slate-950 shadow-lg shadow-emerald-500/40 transition-transform transition-shadow transition-colors duration-150 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-emerald-500/50 hover:from-emerald-300 hover:via-emerald-400 hover:to-teal-300;
+}
+
+.btn-secondary {
+  @apply inline-flex items-center justify-center gap-2 rounded-full border border-slate-700 bg-slate-900 px-5 py-2.5 text-sm font-semibold text-slate-100 shadow-lg shadow-black/40 transition-transform transition-shadow transition-colors duration-150 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-black/60 hover:border-emerald-400 hover:text-emerald-300;
+}
+
+html[data-theme="light"] .btn-secondary {
+  @apply border-slate-200 bg-white text-slate-800 shadow-slate-200/80 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-emerald-300/40 hover:border-emerald-400 hover:text-emerald-700;
+}
+
+html[data-theme="light"] header {
+  @apply bg-white/90 border-slate-200;
+}
+
+/* Footer light theme */
+html[data-theme="light"] footer {
+  @apply bg-white border-t border-slate-200 text-slate-500;
 }
