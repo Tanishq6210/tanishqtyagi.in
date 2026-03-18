@@ -666,6 +666,8 @@ function AwardsSection() {
 function ContactSection() {
   const [mode, setMode] = useState<"message" | "referral">("message");
   const [showJobIdToast, setShowJobIdToast] = useState(false);
+  const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const isReferral = mode === "referral";
 
@@ -729,8 +731,10 @@ function ContactSection() {
         <motion.form
           className="card space-y-4"
           variants={cardVariants}
-          onSubmit={(event) => {
+          onSubmit={async (event) => {
             event.preventDefault();
+            setErrorMessage(null);
+
             const form = event.currentTarget;
             const formData = new FormData(form);
             const name = formData.get("name");
@@ -760,17 +764,62 @@ function ContactSection() {
               }
             }
 
-            const targetEmail = isReferral
-              ? profile.referralEmail
-              : profile.email;
+            formData.append("mode", isReferral ? "referral" : "message");
 
-            const mailto = `mailto:${targetEmail}?subject=${encodeURIComponent(
-              String(subject || `Portfolio contact from ${name || "Visitor"}`),
-            )}&body=${encodeURIComponent(String(message || ""))}`;
+            try {
+              setStatus("submitting");
 
-            window.location.href = mailto;
+              const response = await fetch("/api/send-email", {
+                method: "POST",
+                body: formData,
+              });
+
+              const data = (await response.json()) as {
+                success?: boolean;
+                error?: string;
+              };
+
+              if (!response.ok || !data?.success) {
+                setStatus("error");
+                setErrorMessage(
+                  data?.error || "Something went wrong. Please try again.",
+                );
+                return;
+              }
+
+              setStatus("success");
+              form.reset();
+              setMode("message");
+            } catch (error) {
+              console.error("Failed to send contact form:", error);
+              setStatus("error");
+              setErrorMessage("Something went wrong. Please try again.");
+            } finally {
+              setTimeout(() => {
+                setStatus("idle");
+                setErrorMessage(null);
+              }, 4000);
+            }
           }}
         >
+          {status === "error" && errorMessage && (
+            <motion.div
+              initial={{ opacity: 0, y: -8 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mb-2 rounded-lg border border-red-500/60 bg-red-900/70 px-3 py-2 text-[11px] text-red-100 shadow-lg"
+            >
+              {errorMessage}
+            </motion.div>
+          )}
+          {status === "success" && (
+            <motion.div
+              initial={{ opacity: 0, y: -8 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mb-2 rounded-lg border border-emerald-500/60 bg-emerald-900/70 px-3 py-2 text-[11px] text-emerald-100 shadow-lg"
+            >
+              Message sent successfully.
+            </motion.div>
+          )}
           {showJobIdToast && (
             <motion.div
               initial={{ x: 200, opacity: 0 }}
@@ -912,9 +961,14 @@ function ContactSection() {
             <div className="flex flex-wrap items-center gap-3">
               <button
                 type="submit"
-                className="btn-primary hover:-translate-y-0.5 transform transition"
+                className="btn-primary hover:-translate-y-0.5 transform transition disabled:opacity-60 disabled:cursor-not-allowed"
+                disabled={status === "submitting"}
               >
-                {isReferral ? "Ask for referral" : "Send Message"}
+                {status === "submitting"
+                  ? "Sending..."
+                  : isReferral
+                    ? "Ask for referral"
+                    : "Send Message"}
               </button>
               <button
                 type="button"
