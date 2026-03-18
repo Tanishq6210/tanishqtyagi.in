@@ -7,11 +7,13 @@ export const profile = {
   availabilityBadge: "Open to Opportunities",
   location: "Bangalore, India",
   email: "mailoftanishqtyagi@gmail.com",
+  referralEmail: "tanishq.referrals@gmail.com",
   phone: "9837885503",
   github: "https://github.com/git-tanishq-tyagi",
   linkedin: "https://www.linkedin.com/in/tanishq-tyagi",
   resumeUrl:
     "https://drive.google.com/file/d/1AtY1f-T3xbDK0oZlFNhrSE-Bck7ukF4e/view?usp=sharing",
+  roles: ["Software Engineer", "Data Engineer", "Innovator", "Freelancer"],
 };
 
 export const skills = [

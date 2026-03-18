@@ -199,7 +199,7 @@ function Navbar() {
 function Hero() {
   const prefersReducedMotion = useReducedMotion();
   const fullName = profile.name;
-  const roles = ["Software Engineer", "Data Engineer", "Innovator", "Freelancer"];
+  const roles = profile.roles;
 
   const [nameIndex, setNameIndex] = useState(
     prefersReducedMotion ? fullName.length : 0,
@@ -301,7 +301,7 @@ function Hero() {
                 {fullName}
               </h1>
               <p className="text-lg font-medium text-slate-300 sm:text-xl">
-                Software Engineer · Data Engineer · Backend & Big Data
+                {profile.roles.join(" · ")}
               </p>
               <p className="max-w-xl text-sm leading-relaxed text-slate-300 sm:text-base">
                 {profile.summary}
@@ -664,6 +664,11 @@ function AwardsSection() {
 }
 
 function ContactSection() {
+  const [mode, setMode] = useState<"message" | "referral">("message");
+  const [showJobIdToast, setShowJobIdToast] = useState(false);
+
+  const isReferral = mode === "referral";
+
   return (
     <motion.section
       id="contact"
@@ -733,20 +738,99 @@ function ContactSection() {
             const subject = formData.get("subject");
             const message = formData.get("message");
 
-            const mailto = `mailto:${profile.email}?subject=${encodeURIComponent(
+            if (!name || !email || !subject || !message) {
+              return;
+            }
+
+            if (isReferral) {
+              const subjectStr = String(subject || "");
+              const jobIdPattern = /^REF\d{6}W$/;
+              const jobIds = subjectStr
+                .split(",")
+                .map((id) => id.trim())
+                .filter((id) => id.length > 0);
+
+              if (
+                jobIds.length === 0 ||
+                jobIds.some((id) => !jobIdPattern.test(id))
+              ) {
+                setShowJobIdToast(true);
+                setTimeout(() => setShowJobIdToast(false), 3000);
+                return;
+              }
+            }
+
+            const targetEmail = isReferral
+              ? profile.referralEmail
+              : profile.email;
+
+            const mailto = `mailto:${targetEmail}?subject=${encodeURIComponent(
               String(subject || `Portfolio contact from ${name || "Visitor"}`),
             )}&body=${encodeURIComponent(String(message || ""))}`;
 
             window.location.href = mailto;
           }}
         >
-          <div>
-            <h3 className="text-sm font-semibold text-slate-100">
-              Send a Message
-            </h3>
-            <p className="mt-1 text-xs text-slate-400">
-              This uses your default email client to send the message.
-            </p>
+          {showJobIdToast && (
+            <motion.div
+              initial={{ x: 200, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              exit={{ x: 200, opacity: 0 }}
+              className="mb-2 rounded-lg border border-red-500/60 bg-red-900/70 px-3 py-2 text-[11px] text-red-100 shadow-lg"
+            >
+              Job IDs are not of correct format.
+            </motion.div>
+          )}
+          <div className="flex flex-col gap-2">
+            <div className="flex items-center justify-between gap-3">
+              <div>
+                <h3 className="text-sm font-semibold text-slate-100">
+                  {isReferral ? "Ask for referral" : "Send a Message"}
+                </h3>
+                <p className="mt-1 text-xs text-slate-400">
+                  {isReferral ? (
+                    <>
+                      Get the relevant Job ID from this{" "}
+                      <a
+                        href="https://www.visa.co.uk/en_gb/jobs/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-emerald-300 hover:text-emerald-200 underline underline-offset-2"
+                      >
+                        Visa careers page
+                      </a>{" "}
+                      and include it below.
+                    </>
+                  ) : (
+                    "This uses your default email client to send the message."
+                  )}
+                </p>
+              </div>
+              <div className="inline-flex items-center gap-1 rounded-full border border-slate-700/80 bg-slate-900/80 p-0.5 text-[10px]">
+                <button
+                  type="button"
+                  className={`px-2 py-1 rounded-full transition ${
+                    !isReferral
+                      ? "bg-emerald-500/80 text-slate-950"
+                      : "text-slate-300"
+                  }`}
+                  onClick={() => setMode("message")}
+                >
+                  Message
+                </button>
+                <button
+                  type="button"
+                  className={`px-2 py-1 rounded-full transition ${
+                    isReferral
+                      ? "bg-emerald-500/80 text-slate-950"
+                      : "text-slate-300"
+                  }`}
+                  onClick={() => setMode("referral")}
+                >
+                  Referral
+                </button>
+              </div>
+            </div>
           </div>
           <div className="grid gap-3 sm:grid-cols-2">
             <div className="space-y-1.5">
@@ -762,6 +846,7 @@ function ContactSection() {
                 type="text"
                 className="h-9 w-full rounded-lg border border-slate-700/80 bg-slate-900/80 px-3 text-xs text-slate-100 outline-none ring-emerald-500/60 focus:border-emerald-500 focus:ring-1"
                 placeholder="Your name"
+                required
               />
             </div>
             <div className="space-y-1.5">
@@ -793,7 +878,12 @@ function ContactSection() {
               name="subject"
               type="text"
               className="h-9 w-full rounded-lg border border-slate-700/80 bg-slate-900/80 px-3 text-xs text-slate-100 outline-none ring-emerald-500/60 focus:border-emerald-500 focus:ring-1"
-              placeholder="Project opportunity, collaboration, etc."
+              placeholder={
+                isReferral
+                  ? "e.g. REF075148W, REF075149W"
+                  : "Project opportunity, collaboration, etc."
+              }
+              required
             />
           </div>
           <div className="space-y-1.5">
@@ -803,19 +893,42 @@ function ContactSection() {
             >
               Message
             </label>
-            <textarea
-              id="message"
-              name="message"
-              rows={4}
-              className="w-full resize-none rounded-lg border border-slate-700/80 bg-slate-900/80 px-3 py-2 text-xs text-slate-100 outline-none ring-emerald-500/60 focus:border-emerald-500 focus:ring-1"
-              placeholder="Tell me a bit about what you have in mind..."
-              required
-            />
+              <textarea
+                id="message"
+                name="message"
+                rows={6}
+                maxLength={700}
+                className="w-full resize-none rounded-lg border border-slate-700/80 bg-slate-900/80 px-3 py-2 text-xs text-slate-100 outline-none ring-emerald-500/60 focus:border-emerald-500 focus:ring-1"
+                placeholder={
+                  isReferral
+                    ? "Why are you a good fit for the role?\n\nWrite the response in a third-person narrative format (e.g., “Rohit has improved pipeline efficiency by X%”).\n\nNote: Add numerical values to make it more impactful 🚀"
+                    : "Tell me a bit about what you have in mind..."
+                }
+                required
+              />
           </div>
+          <input id="resume" name="resume" type="file" className="hidden" />
           <div className="pt-2">
-            <button type="submit" className="btn-primary hover:-translate-y-0.5 transform transition">
-              Send Message
-            </button>
+            <div className="flex flex-wrap items-center gap-3">
+              <button
+                type="submit"
+                className="btn-primary hover:-translate-y-0.5 transform transition"
+              >
+                {isReferral ? "Ask for referral" : "Send Message"}
+              </button>
+              <button
+                type="button"
+                className="btn-secondary px-3 py-1.5 text-xs"
+                onClick={() => {
+                  const input = document.getElementById(
+                    "resume",
+                  ) as HTMLInputElement | null;
+                  input?.click();
+                }}
+              >
+                Upload Document
+              </button>
+            </div>
           </div>
         </motion.form>
       </motion.div>
@@ -831,7 +944,7 @@ function Footer() {
           © {new Date().getFullYear()} {profile.name}. All rights reserved.
         </p>
         <p className="text-[11px] text-slate-500">
-          Software Engineer · Data Engineer · Backend &amp; Big Data
+          {profile.roles.join(" · ")}
         </p>
       </div>
     </footer>
