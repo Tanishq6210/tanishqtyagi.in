@@ -668,6 +668,7 @@ function ContactSection() {
   const [showJobIdToast, setShowJobIdToast] = useState(false);
   const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [resumeFile, setResumeFile] = useState<File | null>(null);
 
   const isReferral = mode === "referral";
 
@@ -769,7 +770,7 @@ function ContactSection() {
             try {
               setStatus("submitting");
 
-              const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/send-email`, {
+              const response = await fetch(`/api/send-email`, {
                 method: "POST",
                 body: formData,
               });
@@ -839,29 +840,34 @@ function ContactSection() {
                 <p className="mt-1 text-xs text-slate-400">
                   {isReferral ? (
                     <>
-                      Get the relevant Job ID from this{" "}
+                      Get relevant Job ID from {" "}
                       <a
                         href="https://www.visa.co.uk/en_gb/jobs/"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-emerald-300 hover:text-emerald-200 underline underline-offset-2"
                       >
-                        Visa careers page
+                        VISA careers
                       </a>{" "}
-                      and include it below.
+                      and add it in the subject.
                     </>
                   ) : (
                     "This uses your default email client to send the message."
                   )}
                 </p>
               </div>
-              <div className="inline-flex items-center gap-1 rounded-full border border-slate-700/80 bg-slate-900/80 p-0.5 text-[10px]">
+              <div className="contact-toggle relative items-center p-0.5 text-[10px] shadow-sm shadow-black/30">
+                <motion.div
+                  className="absolute inset-y-0 left-0 my-0.5 h-[calc(100%-4px)] w-1/2 rounded-full bg-emerald-500/85 shadow-[0_0_12px_rgba(16,185,129,0.6)]"
+                  animate={{ left: isReferral ? "50%" : "0%" }}
+                  transition={{ type: "spring", stiffness: 260, damping: 24 }}
+                />
                 <button
                   type="button"
-                  className={`px-2 py-1 rounded-full transition ${
+                  className={`relative z-10 px-3 py-1 rounded-full transition-colors duration-150 ${
                     !isReferral
-                      ? "bg-emerald-500/80 text-slate-950"
-                      : "text-slate-300"
+                      ? "text-slate-950"
+                      : "contact-toggle-label-inactive"
                   }`}
                   onClick={() => setMode("message")}
                 >
@@ -869,10 +875,10 @@ function ContactSection() {
                 </button>
                 <button
                   type="button"
-                  className={`px-2 py-1 rounded-full transition ${
+                  className={`relative z-10 px-3 py-1 rounded-full transition-colors duration-150 ${
                     isReferral
-                      ? "bg-emerald-500/80 text-slate-950"
-                      : "text-slate-300"
+                      ? "text-slate-950"
+                      : "contact-toggle-label-inactive"
                   }`}
                   onClick={() => setMode("referral")}
                 >
@@ -894,7 +900,7 @@ function ContactSection() {
                 name="name"
                 type="text"
                 className="h-9 w-full rounded-lg border border-slate-700/80 bg-slate-900/80 px-3 text-xs text-slate-100 outline-none ring-emerald-500/60 focus:border-emerald-500 focus:ring-1"
-                placeholder="Your name"
+                placeholder="Full Name"
                 required
               />
             </div>
@@ -956,7 +962,16 @@ function ContactSection() {
                 required
               />
           </div>
-          <input id="resume" name="resume" type="file" className="hidden" />
+          <input
+            id="resume"
+            name="resume"
+            type="file"
+            className="hidden"
+            onChange={(event) => {
+              const file = event.target.files?.[0] ?? null;
+              setResumeFile(file ?? null);
+            }}
+          />
           <div className="pt-2">
             <div className="flex flex-wrap items-center gap-3">
               <button
@@ -982,6 +997,31 @@ function ContactSection() {
               >
                 Upload Document
               </button>
+              {resumeFile && (
+                <div className="flex items-center gap-2 text-[11px] text-slate-300">
+                  <span className="max-w-[160px] truncate">
+                    {resumeFile.name}
+                  </span>
+                  <span className="text-slate-500">
+                    {`${Math.round(resumeFile.size / 1024)} KB`}
+                  </span>
+                  <button
+                    type="button"
+                    className="text-emerald-400 hover:text-emerald-300 underline underline-offset-2"
+                    onClick={() => {
+                      const input = document.getElementById(
+                        "resume",
+                      ) as HTMLInputElement | null;
+                      if (input) {
+                        input.value = "";
+                      }
+                      setResumeFile(null);
+                    }}
+                  >
+                    Remove
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         </motion.form>
