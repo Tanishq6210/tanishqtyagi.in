@@ -748,6 +748,12 @@ function ContactSection() {
             }
 
             if (isReferral) {
+              if (!resumeFile) {
+                setStatus("error");
+                setErrorMessage("Please upload your resume before requesting a referral.");
+                return;
+              }
+
               const subjectStr = String(subject || "");
               const jobIdPattern = /^REF\d{6}W$/;
               const jobIds = subjectStr
@@ -995,7 +1001,7 @@ function ContactSection() {
                   input?.click();
                 }}
               >
-                Upload Document
+                {isReferral ? "Upload Resume" : "Upload Document"}
               </button>
               {resumeFile && (
                 <div className="flex items-center gap-2 text-[11px] text-slate-300">
