@@ -6,6 +6,19 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 
 const JOB_ID_PATTERN = /^REF\d{6}W$/;
 
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*", // later restrict to your domain
+  "Access-Control-Allow-Methods": "POST, OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type",
+};
+
+export async function OPTIONS() {
+  return new Response(null, {
+    status: 204,
+    headers: corsHeaders,
+  });
+}
+
 export async function POST(request: NextRequest) {
   if (!process.env.RESEND_API_KEY) {
     return NextResponse.json(
@@ -13,7 +26,10 @@ export async function POST(request: NextRequest) {
         success: false,
         error: "Email service is not configured. Missing RESEND_API_KEY.",
       },
-      { status: 500 },
+      { 
+        status: 500,
+        headers: corsHeaders,
+      }
     );
   }
 
@@ -26,7 +42,9 @@ export async function POST(request: NextRequest) {
         error:
           "Email service is not fully configured. Missing RESEND_FROM_ADDRESS.",
       },
-      { status: 500 },
+      { status: 500 ,
+        headers: corsHeaders,
+      },
     );
   }
 
@@ -47,7 +65,9 @@ export async function POST(request: NextRequest) {
           success: false,
           error: "Missing required fields.",
         },
-        { status: 400 },
+        { status: 400,
+          headers: corsHeaders,
+         },
       );
     }
 
@@ -64,7 +84,10 @@ export async function POST(request: NextRequest) {
             success: false,
             error: "Job IDs are not of correct format.",
           },
-          { status: 400 },
+          {
+             status: 400,
+            headers: corsHeaders,
+      },
         );
       }
     }
@@ -87,7 +110,9 @@ export async function POST(request: NextRequest) {
             success: false,
             error: "Only PDF attachments are allowed.",
           },
-          { status: 400 },
+          { status: 400,
+            headers: corsHeaders,
+           },
         );
       }
 
@@ -128,11 +153,13 @@ export async function POST(request: NextRequest) {
           success: false,
           error: "Failed to send email.",
         },
-        { status: 500 },
+        { status: 500,
+          headers: corsHeaders,
+         },
       );
     }
 
-    return NextResponse.json({ success: true });
+    return NextResponse.json({ success: true },{headers: corsHeaders});
   } catch (error) {
     console.error("Unexpected error in /api/send-email:", error);
     return NextResponse.json(
@@ -140,7 +167,9 @@ export async function POST(request: NextRequest) {
         success: false,
         error: "An unexpected error occurred while sending email.",
       },
-      { status: 500 },
+      { status: 500 ,
+        headers: corsHeaders,
+      },
     );
   }
 }

@@ -769,7 +769,7 @@ function ContactSection() {
             try {
               setStatus("submitting");
 
-              const response = await fetch("/api/send-email", {
+              const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/send-email`, {
                 method: "POST",
                 body: formData,
               });
