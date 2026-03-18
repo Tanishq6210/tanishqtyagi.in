@@ -72,6 +72,8 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    let jobIdsForReferral: string[] | undefined;
+
     if (mode === "referral") {
       const subjectStr = subject;
       const jobIds = subjectStr
@@ -86,11 +88,13 @@ export async function POST(request: NextRequest) {
             error: "Job IDs are not of correct format.",
           },
           {
-             status: 400,
+            status: 400,
             headers: corsHeaders,
-      },
+          },
         );
       }
+
+      jobIdsForReferral = jobIds;
     }
 
     const targetEmail =
@@ -129,21 +133,30 @@ export async function POST(request: NextRequest) {
       ];
     }
 
-    const textBodyLines = [
-      `Name: ${name || "N/A"}`,
-      `Email: ${email}`,
-      `Mode: ${mode}`,
-      "",
-      "Message:",
-      message,
-    ];
+    const safeName = name || "there";
+
+    const subjectForEmail =
+      mode === "referral" && jobIdsForReferral
+        ? profile.referralSubjectTemplate
+            .replace("{Name}", safeName)
+            .replace("{JobIds}", jobIdsForReferral.join(", "))
+        : profile.messageSubjectTemplate;
+
+    const textBody =
+      mode === "referral"
+        ? profile.referralBodyTemplate
+            .replace("{Name}", safeName)
+            .replace("{candidate_response}", message)
+        : profile.messageBodyTemplate
+            .replace("{Name}", safeName)
+            .replace("{UserMessage}", message);
 
     const { error } = await resend.emails.send({
       from: fromAddress,
       to: targetEmail,
-      subject: `[Portfolio] ${subject}`,
+      subject: subjectForEmail,
       replyTo: email,
-      text: textBodyLines.join("\n"),
+      text: textBody,
       attachments,
     });
 

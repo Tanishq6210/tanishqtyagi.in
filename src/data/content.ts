@@ -8,6 +8,40 @@ export const profile = {
   location: "Bangalore, India",
   email: "mailoftanishqtyagi@gmail.com",
   referralEmail: "tanishq.referrals@gmail.com",
+  referralSubjectTemplate: "Referral Request: {Name} | Job IDs: {JobIds}",
+  referralBodyTemplate: `Hi {Name},
+
+Thank you for reaching out for a referral — I really appreciate your interest.
+
+I’ve received your request and will review your profile. I’ll do my best to submit the referral within the next 2 days.
+
+Candidate Response – Why are you a good fit for the role?
+"{candidate_response}"
+
+Once the referral is successfully submitted, you can expect a confirmation email from VISA.
+
+If you have any further questions, please feel free to continue this email thread.
+
+Wishing you the very best for the opportunity — hope you make it big 🚀
+
+Warm regards,
+Tanishq Tyagi ✌️`,
+  messageSubjectTemplate: "Thanks for Reaching Out",
+  messageBodyTemplate: `Hi {Name},
+
+Thank you for reaching out through my portfolio — I truly appreciate it.
+
+Your Message:
+"{UserMessage}"
+
+I’ve received your message and will go through it carefully. I’ll get back to you shortly regarding your query or any potential collaboration.
+
+If you’d like to share anything additional (documents, links, or more details), please feel free to reply to this email.
+
+Looking forward to connecting with you 🤝
+
+Warm regards,
+Tanishq Tyagi ✌️`,
   phone: "9837885503",
   github: "https://github.com/git-tanishq-tyagi",
   linkedin: "https://www.linkedin.com/in/tanishq-tyagi",

@@ -818,7 +818,7 @@ function ContactSection() {
               animate={{ opacity: 1, y: 0 }}
               className="mb-2 rounded-lg border border-emerald-500/60 bg-emerald-900/70 px-3 py-2 text-[11px] text-emerald-100 shadow-lg"
             >
-              Message sent successfully.
+              Mail sent successfully! Please check your inbox.
             </motion.div>
           )}
           {showJobIdToast && (
@@ -831,8 +831,8 @@ function ContactSection() {
               Job IDs are not of correct format.
             </motion.div>
           )}
-          <div className="flex flex-col gap-2">
-            <div className="flex items-center justify-between gap-3">
+          <div className="flex flex-col gap-3">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <div>
                 <h3 className="text-sm font-semibold text-slate-100">
                   {isReferral ? "Ask for referral" : "Send a Message"}
@@ -856,7 +856,7 @@ function ContactSection() {
                   )}
                 </p>
               </div>
-              <div className="contact-toggle relative items-center p-0.5 text-[10px] shadow-sm shadow-black/30">
+              <div className="contact-toggle relative inline-flex w-full items-center justify-between p-0.5 text-[10px] shadow-sm shadow-black/30 sm:w-auto">
                 <motion.div
                   className="absolute inset-y-0 left-0 my-0.5 h-[calc(100%-4px)] w-1/2 rounded-full bg-emerald-500/85 shadow-[0_0_12px_rgba(16,185,129,0.6)]"
                   animate={{ left: isReferral ? "50%" : "0%" }}
@@ -926,7 +926,7 @@ function ContactSection() {
               htmlFor="subject"
               className="text-xs font-medium text-slate-300"
             >
-              Subject
+              {isReferral ? "Job IDs" : "Subject"}
             </label>
             <input
               id="subject"
