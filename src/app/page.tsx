@@ -592,19 +592,41 @@ function ProjectsSection() {
                 </span>
               ))}
             </div>
-            <div className="mt-3 flex flex-wrap gap-3 text-xs">
-              <button
-                type="button"
-                className="btn-primary px-3 py-1.5 text-xs"
-              >
-                Code
-              </button>
-              <button
-                type="button"
-                className="btn-secondary px-3 py-1.5 text-xs"
-              >
-                Demo
-              </button>
+            <div className="mt-auto flex items-center gap-3 text-xs">
+              {project.codeUrl ? (
+                <a
+                  href={project.codeUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn-primary px-3 py-1.5 text-xs"
+                >
+                  Code
+                </a>
+              ) : (
+                <span
+                  className="btn-primary px-3 py-1.5 text-xs invisible"
+                  aria-hidden="true"
+                >
+                  Code
+                </span>
+              )}
+              {project.demoUrl ? (
+                <a
+                  href={project.demoUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn-secondary px-3 py-1.5 text-xs"
+                >
+                  Demo
+                </a>
+              ) : (
+                <span
+                  className="btn-secondary px-3 py-1.5 text-xs invisible"
+                  aria-hidden="true"
+                >
+                  Demo
+                </span>
+              )}
             </div>
           </motion.article>
         ))}

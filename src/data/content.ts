@@ -11,37 +11,33 @@ export const profile = {
   referralSubjectTemplate: "Referral Request: {Name} | Job IDs: {JobIds}",
   referralBodyTemplate: `Hi {Name},
 
-Thank you for reaching out for a referral — I really appreciate your interest.
+Thanks for reaching out. I’ve received your referral request.
 
-I’ve received your request and will review your profile. I’ll do my best to submit the referral within the next 2 days.
+"Why you are a good fit for the role?":
+Your response: "{candidate_response}"
 
-Candidate Response – Why are you a good fit for the role?
-"{candidate_response}"
+I’ll review it and try to submit the referral within the next 2 days. Once done, you’ll receive a confirmation email from VISA.
 
-Once the referral is successfully submitted, you can expect a confirmation email from VISA.
-
-If you have any further questions, please feel free to continue this email thread.
+If you have any questions, feel free to append the email thread ✌️
 
 Wishing you the very best for the opportunity — hope you make it big 🚀
 
 Warm regards,
-Tanishq Tyagi ✌️`,
+Tanishq Tyagi`,
   messageSubjectTemplate: "Thanks for Reaching Out",
   messageBodyTemplate: `Hi {Name},
 
-Thank you for reaching out through my portfolio — I truly appreciate it.
+Thanks for reaching out — I’ve received your message.
 
 Your Message:
 "{UserMessage}"
 
-I’ve received your message and will go through it carefully. I’ll get back to you shortly regarding your query or any potential collaboration.
-
-If you’d like to share anything additional (documents, links, or more details), please feel free to reply to this email.
+I’ll review it and get back to you shortly ✌️
 
 Looking forward to connecting with you 🤝
 
 Warm regards,
-Tanishq Tyagi ✌️`,
+Tanishq Tyagi`,
   phone: "9837885503",
   github: "https://github.com/git-tanishq-tyagi",
   linkedin: "https://www.linkedin.com/in/tanishq-tyagi",
@@ -137,7 +133,7 @@ export const projects = [
   ],
   tags: ["React", "Solidity", "Web3"],
   codeUrl: "https://github.com/Tanishq6210/Voting_Dapp",
-  demoUrl: ""
+  demoUrl: "https://devfolio.co/projects/clearvote-89db"
 },
 {
   name: "Atlas",
@@ -151,7 +147,7 @@ export const projects = [
   ],
   tags: ["Kotlin", "Android", "MVVM"],
   codeUrl: "https://github.com/Tanishq6210/Atlas-Kotlin/tree/main/Atlas",
-  demoUrl: ""
+  demoUrl: "https://github.com/Tanishq6210/Atlas-Kotlin/tree/main/Atlas"
 },
 ];
 
