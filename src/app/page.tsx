@@ -199,7 +199,7 @@ function Navbar() {
 function Hero() {
   const prefersReducedMotion = useReducedMotion();
   const fullName = profile.name;
-  const roles = ["Software Engineer", "Data Engineer", "Backend & Big Data"];
+  const roles = ["Software Engineer", "Data Engineer", "Innovator", "Freelancer"];
 
   const [nameIndex, setNameIndex] = useState(
     prefersReducedMotion ? fullName.length : 0,
