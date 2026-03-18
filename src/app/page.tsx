@@ -858,7 +858,7 @@ function ContactSection() {
                       and add it in the subject.
                     </>
                   ) : (
-                    "This uses your default email client to send the message."
+                    "A copy of this message will be shared with you. Looking forward to connecting! 🚀"
                   )}
                 </p>
               </div>
