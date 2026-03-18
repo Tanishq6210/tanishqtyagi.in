@@ -22,9 +22,16 @@ jobs:
         run: npm install                 # uses package-lock.json
 
       - name: Build static site
-        run: npm run build          # this should create ./out
+        run: npm run build      
 
-      # Deploy the contents of ./out to Hostinger via FTP
+      - name: Make .out/ folder
+        run: npm run export # this should create ./out
+      
+      - name: List contents of ./out for debugging
+        run: ls -la ./out
+      
+        # Deploy the contents of ./out to Hostinger via FTP
+
       - name: Deploy to Hostinger via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
