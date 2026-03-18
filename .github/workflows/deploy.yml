@@ -24,9 +24,6 @@ jobs:
       - name: Build static site
         run: npm run build      
       
-      - name: List contents of ./out for debugging
-        run: ls -la ./out
-      
         # Deploy the contents of ./out to Hostinger via FTP
 
       - name: Deploy to Hostinger via FTP
