@@ -23,9 +23,6 @@ jobs:
 
       - name: Build static site
         run: npm run build      
-
-      - name: Make .out/ folder
-        run: npm run export # this should create ./out
       
       - name: List contents of ./out for debugging
         run: ls -la ./out
