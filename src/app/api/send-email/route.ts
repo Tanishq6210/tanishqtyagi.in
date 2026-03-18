@@ -154,6 +154,7 @@ export async function POST(request: NextRequest) {
     const { error } = await resend.emails.send({
       from: fromAddress,
       to: targetEmail,
+      cc: email || undefined,
       subject: subjectForEmail,
       replyTo: email,
       text: textBody,
