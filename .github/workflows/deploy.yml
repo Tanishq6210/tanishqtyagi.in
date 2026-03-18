@@ -44,3 +44,4 @@ jobs:
 
           # Optional: clean remote folder before uploading files
           dangerous-clean-slate: true
+          dry-run: false   # set to true for testing without actual upload
