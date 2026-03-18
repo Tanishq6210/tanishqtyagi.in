@@ -2,8 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
 import { profile } from "@/data/content";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
-
 const JOB_ID_PATTERN = /^REF\d{6}W$/;
 
 const corsHeaders = {
@@ -20,6 +18,7 @@ export async function OPTIONS() {
 }
 
 export async function POST(request: NextRequest) {
+
   if (!process.env.RESEND_API_KEY) {
     return NextResponse.json(
       {
@@ -32,6 +31,8 @@ export async function POST(request: NextRequest) {
       }
     );
   }
+
+  const resend = new Resend(process.env.RESEND_API_KEY);
 
   const fromAddress = process.env.RESEND_FROM_ADDRESS;
 
