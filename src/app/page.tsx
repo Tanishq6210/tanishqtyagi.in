@@ -708,7 +708,7 @@ function ContactSection() {
           <span className="h-8 w-1 rounded-full bg-emerald-500/80" />
           <div>
             <h2 className="text-xl font-semibold text-slate-50 sm:text-2xl">
-              Contact
+                Contact Me
             </h2>
             <p className="mt-1 text-xs text-slate-400 sm:text-sm">
               Let&apos;s talk about building something impactful together.
@@ -880,7 +880,7 @@ function ContactSection() {
                       and add it in the subject.
                     </>
                   ) : (
-                    "A copy of this message will be shared with you. Looking forward to connecting! 🚀"
+                    "A copy of this email will be shared with you. Let's Connect! 🚀"
                   )}
                 </p>
               </div>
@@ -964,7 +964,7 @@ function ContactSection() {
               placeholder={
                 isReferral
                   ? "e.g. REF075148W, REF075149W"
-                  : "Project opportunity, collaboration, etc."
+                  : "Portfolio Feedback, Project opportunity, collaboration, etc."
               }
               required
             />
@@ -984,7 +984,7 @@ function ContactSection() {
                 className="w-full resize-none rounded-lg border border-slate-700/80 bg-slate-900/80 px-3 py-2 text-xs text-slate-100 outline-none ring-emerald-500/60 focus:border-emerald-500 focus:ring-1"
                 placeholder={
                   isReferral
-                    ? "Why are you a good fit for the role?\n\nWrite the response in a third-person narrative format (e.g., “Rohit has improved pipeline efficiency by X%”).\n\nNote: Add numerical values to make it more impactful 🚀"
+                    ? "Why are you a good fit for the role?\n\nWrite the response in a third-person narrative format (e.g., “Rohit has improved pipeline efficiency by 10%”).\n\nTip: Add numbers to make it more impactful as shown in the example 😉"
                     : "Tell me a bit about what you have in mind..."
                 }
                 required

@@ -13,7 +13,7 @@ export const profile = {
 
 Thanks for reaching out. I’ve received your referral request.
 
-"Why you are a good fit for the role?":
+"Why you are a good fit for the role?"
 Your response: "{candidate_response}"
 
 I’ll review it and try to submit the referral within the next 2 days. Once done, you’ll receive a confirmation email from VISA.
@@ -43,7 +43,7 @@ Tanishq Tyagi`,
   linkedin: "https://www.linkedin.com/in/tanishq-tyagi",
   resumeUrl:
     "https://drive.google.com/file/d/1AtY1f-T3xbDK0oZlFNhrSE-Bck7ukF4e/view?usp=sharing",
-  roles: ["Software Engineer", "Data Engineer", "Innovator", "Freelancer"],
+  roles: ["Software Engineer", "Data Engineer", "Full Stack Developer"],
 };
 
 export const skills = [
