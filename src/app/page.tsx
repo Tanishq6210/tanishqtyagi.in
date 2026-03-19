@@ -1196,8 +1196,8 @@ function ContactSection() {
                 {status === "submitting"
                   ? "Sending..."
                   : isReferral
-                    ? "🚀 Request Referral"
-                    : "Send Message →"}
+                    ? "Request Referral"
+                    : "Send Message"}
               </button>
               <button
                 type="button"
