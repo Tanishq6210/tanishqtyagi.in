@@ -2,9 +2,10 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import Script from "next/script";
 import { motion, useReducedMotion } from "framer-motion";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   profile,
   skills,
@@ -685,12 +686,95 @@ function AwardsSection() {
   );
 }
 
+// Cloudflare Turnstile globals
+declare global {
+  interface Window {
+    turnstile?: {
+      render: (
+        container: string | HTMLElement,
+        options: {
+          sitekey: string;
+          callback?: (token: string) => void;
+          "error-callback"?: () => void;
+          "timeout-callback"?: () => void;
+        },
+      ) => void;
+      reset?: (widgetId?: string) => void;
+    };
+  }
+}
+
 function ContactSection() {
+  const TOAST_DURATION_MS = 5000;
   const [mode, setMode] = useState<"message" | "referral">("message");
   const [showJobIdToast, setShowJobIdToast] = useState(false);
   const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [resumeFile, setResumeFile] = useState<File | null>(null);
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
+  const errorRef = useRef<HTMLDivElement | null>(null);
+
+  const siteKey = process.env.NEXT_PUBLIC_CLOUDFLARE_TURNSTILE_SITE_KEY;
+
+  useEffect(() => {
+    if (!siteKey) {
+      console.warn(
+        "NEXT_PUBLIC_CLOUDFLARE_TURNSTILE_SITE_KEY (or CLOUDFARE_TURNSTILE_SITE_KEY) is not set.",
+      );
+      return;
+    }
+
+    let cancelled = false;
+    let pollId: number | undefined;
+
+    const renderTurnstile = () => {
+      if (cancelled) return;
+      if (!window.turnstile) {
+        return;
+      }
+
+      window.turnstile.render("#turnstile-container", {
+        sitekey: siteKey,
+        callback: (token: string) => {
+          setTurnstileToken(token);
+        },
+        "error-callback": () => {
+          setTurnstileToken(null);
+        },
+        "timeout-callback": () => {
+          setTurnstileToken(null);
+        },
+      });
+    };
+
+    if (window.turnstile) {
+      renderTurnstile();
+    } else {
+      pollId = window.setInterval(() => {
+        if (window.turnstile) {
+          if (pollId !== undefined) {
+            window.clearInterval(pollId);
+          }
+          renderTurnstile();
+        }
+      }, 400);
+    }
+
+    return () => {
+      cancelled = true;
+      if (pollId !== undefined) {
+        window.clearInterval(pollId);
+      }
+    };
+  }, [siteKey]);
+
+  useEffect(() => {
+    if (status !== "error") return;
+    if (!errorRef.current) return;
+
+    errorRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+    errorRef.current.focus();
+  }, [status]);
 
   const isReferral = mode === "referral";
 
@@ -769,10 +853,26 @@ function ContactSection() {
               return;
             }
 
+            if (!turnstileToken) {
+              setStatus("error");
+              setErrorMessage(
+                "Verification could not be completed. Please complete the Turnstile check and try again.",
+              );
+              setTimeout(() => {
+                setStatus("idle");
+                setErrorMessage(null);
+              }, TOAST_DURATION_MS);
+              return;
+            }
+
             if (isReferral) {
               if (!resumeFile) {
                 setStatus("error");
                 setErrorMessage("Please upload your resume before requesting a referral.");
+                setTimeout(() => {
+                  setStatus("idle");
+                  setErrorMessage(null);
+                }, TOAST_DURATION_MS);
                 return;
               }
 
@@ -788,12 +888,13 @@ function ContactSection() {
                 jobIds.some((id) => !jobIdPattern.test(id))
               ) {
                 setShowJobIdToast(true);
-                setTimeout(() => setShowJobIdToast(false), 3000);
+                setTimeout(() => setShowJobIdToast(false), TOAST_DURATION_MS);
                 return;
               }
             }
 
             formData.append("mode", isReferral ? "referral" : "message");
+            formData.append("turnstileToken", turnstileToken);
 
             try {
               setStatus("submitting");
@@ -802,6 +903,14 @@ function ContactSection() {
                 method: "POST",
                 body: formData,
               });
+
+              if (response.status === 429) {
+                setStatus("error");
+                setErrorMessage(
+                  "You’re sending messages too quickly. Please wait a few seconds and try again.",
+                );
+                return;
+              }
 
               const data = (await response.json()) as {
                 success?: boolean;
@@ -819,6 +928,14 @@ function ContactSection() {
               setStatus("success");
               form.reset();
               setMode("message");
+              // Clear resume attachment after successful submissio n
+              const resumeInput = document.getElementById(
+                "resume",
+              ) as HTMLInputElement | null;
+              if (resumeInput) {
+                resumeInput.value = "";
+              }
+              setResumeFile(null);
             } catch (error) {
               console.error("Failed to send contact form:", error);
               setStatus("error");
@@ -827,15 +944,18 @@ function ContactSection() {
               setTimeout(() => {
                 setStatus("idle");
                 setErrorMessage(null);
-              }, 4000);
+              }, TOAST_DURATION_MS);
             }
           }}
         >
           {status === "error" && errorMessage && (
             <motion.div
+              ref={errorRef}
               initial={{ opacity: 0, y: -8 }}
               animate={{ opacity: 1, y: 0 }}
               className="mb-2 rounded-lg border border-red-500/60 bg-red-900/70 px-3 py-2 text-[11px] text-red-100 shadow-lg"
+              role="alert"
+              tabIndex={-1}
             >
               {errorMessage}
             </motion.div>
@@ -915,6 +1035,15 @@ function ContactSection() {
               </div>
             </div>
           </div>
+          <div className="mt-1">
+            <div id="turnstile-container" className="mt-1" />
+            {!siteKey && (
+              <p className="mt-2 text-[11px] text-red-300">
+                Contact form verification is misconfigured. Please try again
+                later.
+              </p>
+            )}
+          </div>
           <div className="grid gap-3 sm:grid-cols-2">
             <div className="space-y-1.5">
               <label
@@ -948,6 +1077,21 @@ function ContactSection() {
                 required
               />
             </div>
+          </div>
+          <div
+            className="sr-only"
+            aria-hidden="true"
+          >
+            <label htmlFor="company">
+              Company
+            </label>
+            <input
+              id="company"
+              name="company"
+              type="text"
+              autoComplete="off"
+              tabIndex={-1}
+            />
           </div>
           <div className="space-y-1.5">
             <label
@@ -1005,7 +1149,7 @@ function ContactSection() {
               <button
                 type="submit"
                 className="btn-primary hover:-translate-y-0.5 transform transition disabled:opacity-60 disabled:cursor-not-allowed"
-                disabled={status === "submitting"}
+                disabled={status === "submitting" || !siteKey}
               >
                 {status === "submitting"
                   ? "Sending..."
@@ -1075,17 +1219,24 @@ function Footer() {
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100">
-      <Navbar />
-      <main>
-        <Hero />
-        <ExperienceSection />
-        <ProjectsSection />
-        <AwardsSection />
-        <SkillsSection />
-        <ContactSection />
-      </main>
-      <Footer />
-    </div>
+    <>
+      <Script
+        src="https://challenges.cloudflare.com/turnstile/v0/api.js"
+        async
+        defer
+      />
+      <div className="min-h-screen bg-slate-950 text-slate-100">
+        <Navbar />
+        <main>
+          <Hero />
+          <ExperienceSection />
+          <ProjectsSection />
+          <AwardsSection />
+          <SkillsSection />
+          <ContactSection />
+        </main>
+        <Footer />
+      </div>
+    </>
   );
 }
