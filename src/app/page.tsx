@@ -949,6 +949,18 @@ function ContactSection() {
             if (!name || !email || !subject || !message) {
               return;
             }
+            const messageText = String(message);
+            if (messageText.trim().length < 10) {
+              setStatus("error");
+              setErrorMessage(
+                "Message must be at least 10 characters long so that I have enough context.",
+              );
+              setTimeout(() => {
+                setStatus("idle");
+                setErrorMessage(null);
+              }, TOAST_DURATION_MS);
+              return;
+            }
 
             if (isReferral) {
               if (!resumeFile) {
