@@ -713,6 +713,8 @@ function ContactSection() {
   const [resumeFile, setResumeFile] = useState<File | null>(null);
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
   const errorRef = useRef<HTMLDivElement | null>(null);
+  const formRef = useRef<HTMLFormElement | null>(null);
+  const pendingSubmissionRef = useRef(false);
 
   const siteKey = process.env.NEXT_PUBLIC_CLOUDFLARE_TURNSTILE_SITE_KEY;
 
@@ -737,12 +739,37 @@ function ContactSection() {
         sitekey: siteKey,
         callback: (token: string) => {
           setTurnstileToken(token);
+          if (pendingSubmissionRef.current && formRef.current) {
+            void submitForm(formRef.current, token);
+          }
         },
         "error-callback": () => {
           setTurnstileToken(null);
+          if (pendingSubmissionRef.current) {
+            pendingSubmissionRef.current = false;
+            setStatus("error");
+            setErrorMessage(
+              "Turnstile verification failed. Please complete the verification and try again.",
+            );
+            setTimeout(() => {
+              setStatus("idle");
+              setErrorMessage(null);
+            }, TOAST_DURATION_MS);
+          }
         },
         "timeout-callback": () => {
           setTurnstileToken(null);
+          if (pendingSubmissionRef.current) {
+            pendingSubmissionRef.current = false;
+            setStatus("error");
+            setErrorMessage(
+              "Turnstile verification timed out. Please try again.",
+            );
+            setTimeout(() => {
+              setStatus("idle");
+              setErrorMessage(null);
+            }, TOAST_DURATION_MS);
+          }
         },
       });
     };
@@ -777,6 +804,67 @@ function ContactSection() {
   }, [status]);
 
   const isReferral = mode === "referral";
+
+  async function submitForm(form: HTMLFormElement, token: string) {
+    const formData = new FormData(form);
+
+    formData.append("mode", isReferral ? "referral" : "message");
+    formData.append("turnstileToken", token);
+
+    try {
+      setStatus("submitting");
+
+      const response = await fetch(`/api/send-email`, {
+        method: "POST",
+        body: formData,
+      });
+
+      if (response.status === 429) {
+        setStatus("error");
+        setErrorMessage(
+          "You’re sending messages too quickly. Please wait a few seconds and try again.",
+        );
+        return;
+      }
+
+      const data = (await response.json()) as {
+        success?: boolean;
+        error?: string;
+      };
+
+      if (!response.ok || !data?.success) {
+        setStatus("error");
+        setErrorMessage(
+          data?.error || "Something went wrong. Please try again.",
+        );
+        return;
+      }
+
+      setStatus("success");
+      form.reset();
+      setMode("message");
+      // Clear resume attachment after successful submission
+      const resumeInput = document.getElementById(
+        "resume",
+      ) as HTMLInputElement | null;
+      if (resumeInput) {
+        resumeInput.value = "";
+      }
+      setResumeFile(null);
+    } catch (error) {
+      console.error("Failed to send contact form:", error);
+      setStatus("error");
+      setErrorMessage("Something went wrong. Please try again.");
+    } finally {
+      pendingSubmissionRef.current = false;
+      setTurnstileToken(null);
+      window.turnstile?.reset?.();
+      setTimeout(() => {
+        setStatus("idle");
+        setErrorMessage(null);
+      }, TOAST_DURATION_MS);
+    }
+  }
 
   return (
     <motion.section
@@ -836,6 +924,7 @@ function ContactSection() {
         </motion.div>
 
         <motion.form
+          ref={formRef}
           className="card space-y-4"
           variants={cardVariants}
           onSubmit={async (event) => {
@@ -853,22 +942,12 @@ function ContactSection() {
               return;
             }
 
-            if (!turnstileToken) {
-              setStatus("error");
-              setErrorMessage(
-                "Verification could not be completed. Please complete the Turnstile check and try again.",
-              );
-              setTimeout(() => {
-                setStatus("idle");
-                setErrorMessage(null);
-              }, TOAST_DURATION_MS);
-              return;
-            }
-
             if (isReferral) {
               if (!resumeFile) {
                 setStatus("error");
-                setErrorMessage("Please upload your resume before requesting a referral.");
+                setErrorMessage(
+                  "Please upload your resume before requesting a referral.",
+                );
                 setTimeout(() => {
                   setStatus("idle");
                   setErrorMessage(null);
@@ -893,59 +972,11 @@ function ContactSection() {
               }
             }
 
-            formData.append("mode", isReferral ? "referral" : "message");
-            formData.append("turnstileToken", turnstileToken);
-
-            try {
-              setStatus("submitting");
-
-              const response = await fetch(`/api/send-email`, {
-                method: "POST",
-                body: formData,
-              });
-
-              if (response.status === 429) {
-                setStatus("error");
-                setErrorMessage(
-                  "You’re sending messages too quickly. Please wait a few seconds and try again.",
-                );
-                return;
-              }
-
-              const data = (await response.json()) as {
-                success?: boolean;
-                error?: string;
-              };
-
-              if (!response.ok || !data?.success) {
-                setStatus("error");
-                setErrorMessage(
-                  data?.error || "Something went wrong. Please try again.",
-                );
-                return;
-              }
-
-              setStatus("success");
-              form.reset();
-              setMode("message");
-              // Clear resume attachment after successful submissio n
-              const resumeInput = document.getElementById(
-                "resume",
-              ) as HTMLInputElement | null;
-              if (resumeInput) {
-                resumeInput.value = "";
-              }
-              setResumeFile(null);
-            } catch (error) {
-              console.error("Failed to send contact form:", error);
-              setStatus("error");
-              setErrorMessage("Something went wrong. Please try again.");
-            } finally {
-              setTimeout(() => {
-                setStatus("idle");
-                setErrorMessage(null);
-              }, TOAST_DURATION_MS);
-            }
+            // Always request a fresh Turnstile token for each submission
+            pendingSubmissionRef.current = true;
+            setStatus("submitting");
+            setTurnstileToken(null);
+            window.turnstile?.reset?.();
           }}
         >
           {status === "error" && errorMessage && (
