@@ -13,6 +13,7 @@ import {
   projects,
   awards,
 } from "@/data/content";
+import { useNotification } from "@/components/notification/NotificationProvider";
 
 const SECTIONS = [
   { id: "home", label: "Home" },
@@ -715,6 +716,7 @@ function ContactSection() {
   const errorRef = useRef<HTMLDivElement | null>(null);
   const formRef = useRef<HTMLFormElement | null>(null);
   const pendingSubmissionRef = useRef(false);
+  const { showNotification } = useNotification();
 
   const siteKey = process.env.NEXT_PUBLIC_CLOUDFLARE_TURNSTILE_SITE_KEY;
 
@@ -851,6 +853,12 @@ function ContactSection() {
         resumeInput.value = "";
       }
       setResumeFile(null);
+      showNotification({
+        message: "Mail sent successfully",
+        description: "Thanks for reaching out! Please check your inbox.",
+        type: "success",
+        durationMs: 5000,
+      });
     } catch (error) {
       console.error("Failed to send contact form:", error);
       setStatus("error");
@@ -989,15 +997,6 @@ function ContactSection() {
               tabIndex={-1}
             >
               {errorMessage}
-            </motion.div>
-          )}
-          {status === "success" && (
-            <motion.div
-              initial={{ opacity: 0, y: -8 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="mb-2 rounded-lg border border-emerald-500/60 bg-emerald-900/70 px-3 py-2 text-[11px] text-emerald-100 shadow-lg"
-            >
-              Mail sent successfully! Please check your inbox.
             </motion.div>
           )}
           {showJobIdToast && (
