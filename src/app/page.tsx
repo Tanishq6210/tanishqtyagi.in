@@ -1160,7 +1160,7 @@ function ContactSection() {
               htmlFor="message"
               className="text-xs font-medium text-slate-300"
             >
-              Message
+              {isReferral ? "Why are you a good fit for this role?" : "Message"}
             </label>
               <textarea
                 id="message"
@@ -1170,7 +1170,7 @@ function ContactSection() {
                 className="w-full resize-none rounded-lg border border-slate-700/80 bg-slate-900/80 px-3 py-2 text-xs text-slate-100 outline-none ring-emerald-500/60 focus:border-emerald-500 focus:ring-1"
                 placeholder={
                   isReferral
-                    ? "Why are you a good fit for the role?\n\nWrite the response in a third-person narrative format (e.g., “Rohit has improved pipeline efficiency by 10%”).\n\nTip: Add numbers to make it more impactful as shown in the example 😉"
+                    ? "Write the response in a third-person narrative format (e.g., “Rohit has improved pipeline efficiency by 10%”).\n\nTip: Add numbers to make it more impactful as shown in the example 😉"
                     : "Tell me a bit about what you have in mind... 🤔"
                 }
                 required
@@ -1196,8 +1196,8 @@ function ContactSection() {
                 {status === "submitting"
                   ? "Sending..."
                   : isReferral
-                    ? "Ask for referral"
-                    : "Send Message"}
+                    ? "🚀 Request Referral"
+                    : "Send Message →"}
               </button>
               <button
                 type="button"
