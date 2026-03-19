@@ -790,6 +790,10 @@ function ContactSection() {
               if (!resumeFile) {
                 setStatus("error");
                 setErrorMessage("Please upload your resume before requesting a referral.");
+                setTimeout(() => {
+                  setStatus("idle");
+                  setErrorMessage(null);
+                }, 5000);
                 return;
               }
 
