@@ -985,7 +985,7 @@ function ContactSection() {
                 placeholder={
                   isReferral
                     ? "Why are you a good fit for the role?\n\nWrite the response in a third-person narrative format (e.g., “Rohit has improved pipeline efficiency by 10%”).\n\nTip: Add numbers to make it more impactful as shown in the example 😉"
-                    : "Tell me a bit about what you have in mind..."
+                    : "Tell me a bit about what you have in mind... 🤔"
                 }
                 required
               />
