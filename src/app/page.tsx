@@ -964,7 +964,7 @@ function ContactSection() {
               placeholder={
                 isReferral
                   ? "e.g. REF075148W, REF075149W"
-                  : "Portfolio Feedback, Project opportunity, collaboration, etc."
+                  : "Portfolio feedback, Project opportunity, collaboration, etc."
               }
               required
             />
