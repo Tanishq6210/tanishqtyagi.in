@@ -708,6 +708,9 @@ declare global {
 function ContactSection() {
   const TOAST_DURATION_MS = 5000;
   const [mode, setMode] = useState<"message" | "referral">("message");
+  // Turnstile callback is registered once per `siteKey`. Keep a ref to the latest
+  // tab selection so `submitForm()` sends the correct `mode` to the API.
+  const modeRef = useRef<"message" | "referral">("message");
   const [showJobIdToast, setShowJobIdToast] = useState(false);
   const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -798,6 +801,10 @@ function ContactSection() {
   }, [siteKey]);
 
   useEffect(() => {
+    modeRef.current = mode;
+  }, [mode]);
+
+  useEffect(() => {
     if (status !== "error") return;
     if (!errorRef.current) return;
 
@@ -810,7 +817,7 @@ function ContactSection() {
   async function submitForm(form: HTMLFormElement, token: string) {
     const formData = new FormData(form);
 
-    formData.append("mode", isReferral ? "referral" : "message");
+    formData.append("mode", modeRef.current === "referral" ? "referral" : "message");
     formData.append("turnstileToken", token);
 
     try {
