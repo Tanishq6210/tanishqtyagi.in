@@ -161,3 +161,27 @@ html[data-theme="light"] .contact-toggle {
 html[data-theme="light"] .contact-toggle-label-inactive {
   @apply text-slate-600;
 }
+
+.notification-banner {
+  @apply border-emerald-500/60 bg-slate-900/85 text-slate-100 shadow-lg shadow-emerald-500/30;
+}
+
+.notification-banner[data-variant="error"] {
+  @apply border-red-500/70 bg-red-950/90 text-red-50;
+}
+
+.notification-banner[data-variant="info"] {
+  @apply border-sky-500/70 bg-slate-900/90 text-slate-50;
+}
+
+html[data-theme="light"] .notification-banner {
+  @apply border-emerald-400 bg-white/95 text-slate-900 shadow-md shadow-emerald-200/80;
+}
+
+html[data-theme="light"] .notification-banner[data-variant="error"] {
+  @apply border-red-400 bg-red-50 text-red-900;
+}
+
+html[data-theme="light"] .notification-banner[data-variant="info"] {
+  @apply border-sky-400 bg-sky-50 text-slate-900;
+}

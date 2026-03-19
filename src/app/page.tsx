@@ -12,6 +12,7 @@ import {
   projects,
   awards,
 } from "@/data/content";
+import { useNotification } from "@/components/notification/NotificationProvider";
 
 const SECTIONS = [
   { id: "home", label: "Home" },
@@ -49,6 +50,7 @@ function Navbar() {
   const [scrollProgress, setScrollProgress] = useState(0);
   const [theme, setTheme] = useState<"dark" | "light">("dark");
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
+  const { showNotification } = useNotification();
 
   useEffect(() => {
     const onScroll = () => {
@@ -133,6 +135,20 @@ function Navbar() {
             ))}
           </nav>
           <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() =>
+                showNotification({
+                  message: "Changes saved",
+                  description: "Your latest updates have been stored successfully.",
+                  type: "success",
+                  durationMs: 8000,
+                })
+              }
+              className="hidden items-center gap-1 rounded-full border border-emerald-500/60 bg-emerald-500/15 px-3 py-1.5 text-[11px] font-medium text-emerald-200 shadow-sm shadow-emerald-500/40 transition hover:border-emerald-400 hover:bg-emerald-500/30 hover:text-emerald-50 sm:inline-flex"
+            >
+              <span>Show banner</span>
+            </button>
             <button
               type="button"
               onClick={toggleTheme}
@@ -691,6 +707,7 @@ function ContactSection() {
   const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [resumeFile, setResumeFile] = useState<File | null>(null);
+  const { showNotification } = useNotification();
 
   const isReferral = mode === "referral";
 
@@ -816,9 +833,17 @@ function ContactSection() {
                 return;
               }
 
-              setStatus("success");
+              // Stay where the user is on the page; only show a global notification.
+              setStatus("idle");
+              showNotification({
+                message: "Mail sent successfully",
+                description: "Thanks for reaching out! A copy of mail has been shared with you.",
+                type: "success",
+                durationMs: 5000,
+              });
               form.reset();
               setMode("message");
+              setResumeFile(null);
             } catch (error) {
               console.error("Failed to send contact form:", error);
               setStatus("error");
@@ -838,15 +863,6 @@ function ContactSection() {
               className="mb-2 rounded-lg border border-red-500/60 bg-red-900/70 px-3 py-2 text-[11px] text-red-100 shadow-lg"
             >
               {errorMessage}
-            </motion.div>
-          )}
-          {status === "success" && (
-            <motion.div
-              initial={{ opacity: 0, y: -8 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="mb-2 rounded-lg border border-emerald-500/60 bg-emerald-900/70 px-3 py-2 text-[11px] text-emerald-100 shadow-lg"
-            >
-              Mail sent successfully! Please check your inbox.
             </motion.div>
           )}
           {showJobIdToast && (

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import { NotificationProvider } from "@/components/notification/NotificationProvider";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -36,7 +37,7 @@ export default function RootLayout({
         suppressHydrationWarning
         className={`${inter.variable} antialiased bg-slate-950 text-slate-100`}
       >
-        {children}
+        <NotificationProvider>{children}</NotificationProvider>
       </body>
     </html>
   );
