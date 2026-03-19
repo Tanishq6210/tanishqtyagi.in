@@ -845,7 +845,7 @@ function ContactSection() {
       setStatus("success");
       form.reset();
       setMode("message");
-      // Clear resume attachment after successful submission
+      // Clear resume attachment after successful submissi
       const resumeInput = document.getElementById(
         "resume",
       ) as HTMLInputElement | null;
