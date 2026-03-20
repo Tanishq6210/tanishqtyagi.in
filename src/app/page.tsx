@@ -716,6 +716,7 @@ function ContactSection() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [resumeFile, setResumeFile] = useState<File | null>(null);
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
+  const [isEmailCopied, setIsEmailCopied] = useState(false);
   const errorRef = useRef<HTMLDivElement | null>(null);
   const formRef = useRef<HTMLFormElement | null>(null);
   const pendingSubmissionRef = useRef(false);
@@ -814,6 +815,59 @@ function ContactSection() {
 
   const isReferral = mode === "referral";
 
+  async function copyEmailToClipboard() {
+    const email = profile.email;
+    try {
+      if (navigator?.clipboard?.writeText) {
+        await navigator.clipboard.writeText(email);
+      } else {
+        throw new Error("Clipboard API not available");
+      }
+
+      setIsEmailCopied(true);
+      showNotification({
+        message: "Email copied",
+        description: "Paste it anywhere you like.",
+        type: "success",
+        durationMs: 3000,
+      });
+
+      window.setTimeout(() => setIsEmailCopied(false), 1600);
+    } catch {
+      try {
+        // Fallback for older browsers / restricted environments.
+        const textarea = document.createElement("textarea");
+        textarea.value = email;
+        textarea.setAttribute("readonly", "true");
+        textarea.style.position = "fixed";
+        textarea.style.top = "-1000px";
+        textarea.style.left = "-1000px";
+        document.body.appendChild(textarea);
+        textarea.select();
+
+        const ok = document.execCommand("copy");
+        document.body.removeChild(textarea);
+        if (!ok) throw new Error("Copy command failed");
+
+        setIsEmailCopied(true);
+        showNotification({
+          message: "Email copied",
+          description: "Paste it anywhere you like.",
+          type: "success",
+          durationMs: 3000,
+        });
+        window.setTimeout(() => setIsEmailCopied(false), 1600);
+      } catch {
+        showNotification({
+          message: "Copy failed",
+          description: "Please copy the email address manually.",
+          type: "error",
+          durationMs: 4000,
+        });
+      }
+    }
+  }
+
   async function submitForm(form: HTMLFormElement, token: string) {
     const formData = new FormData(form);
 
@@ -904,36 +958,130 @@ function ContactSection() {
         </div>
       </div>
       <motion.div
-        className="grid gap-6 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1.2fr)]"
+        className="grid gap-6 md:grid-cols-2 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1.2fr)]"
         initial="hidden"
         whileInView="visible"
         viewport={{ amount: 0.2 }}
         transition={{ staggerChildren: 0.12 }}
       >
-        <motion.div className="card space-y-4" variants={cardVariants}>
+        <motion.div
+          className="card space-y-4 opacity-90 bg-slate-900/45 shadow-black/20 backdrop-blur-xl hover:opacity-100 hover:-translate-y-0.5 hover:border-emerald-500/55 hover:bg-slate-900/75 hover:shadow-emerald-500/12"
+          variants={cardVariants}
+        >
           <div>
-            <h3 className="text-sm font-semibold text-slate-100">
-              Contact Details
-            </h3>
-            <p className="mt-1 text-xs text-slate-400">
-              I typically respond within a day.
+            <p className="text-[11px] font-semibold uppercase tracking-widest text-slate-400">
+              Trust & Info Panel
             </p>
-          </div>
-          <div className="space-y-3 text-xs text-slate-200">
-            <div className="rounded-xl border border-slate-800/60 bg-slate-950/80 p-3">
-              <p className="text-[11px] text-slate-400">Email</p>
-              <a
-                href={`mailto:${profile.email}`}
-                className="mt-0.5 block text-sm text-emerald-300 hover:text-emerald-200"
-              >
-                {profile.email}
-              </a>
-            </div>
-            <div className="rounded-xl border border-slate-800/60 bg-slate-950/80 p-3">
-              <p className="text-[11px] text-slate-400">Location</p>
-              <p className="mt-0.5 text-sm text-slate-200">
-                {profile.location}
+            <h3 className="mt-2 text-lg font-semibold text-slate-50">
+              Let's Connect
+            </h3>
+            <div className="mt-3 space-y-2 text-xs text-slate-200">
+              <div className="flex items-center gap-2">
+                <span className="h-2.5 w-2.5 rounded-full bg-emerald-400 shadow-[0_0_18px_rgba(16,185,129,0.65)]" />
+                <span>Available for opportunities</span>
+              </div>
+              <p>
+                Usually replies within{" "}
+                <span className="text-emerald-300">12–24 hours</span>
               </p>
+              <p className="text-slate-300">
+                Happy to discuss projects, roles, or ideas 🚀
+              </p>
+              <p className="text-[11px] text-slate-400">
+                For fastest response, use the form on the right.
+              </p>
+            </div>
+          </div>
+
+          <div>
+            <h4 className="text-[11px] font-semibold text-slate-300">
+              What you can reach out for:
+            </h4>
+            <ul className="mt-2 space-y-2">
+              {[
+                "Freelance Projects",
+                "Full-time Opportunities",
+                "Collaborations",
+                "Open Source",
+              ].map((item) => (
+                <li
+                  key={item}
+                  className="flex items-start gap-2 text-xs text-slate-200"
+                >
+                  <span className="mt-1 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-emerald-400 shadow-[0_0_14px_rgba(16,185,129,0.35)]" />
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div>
+            <h4 className="text-[11px] font-semibold text-slate-300">
+              Social proof
+            </h4>
+            <div className="mt-2 grid gap-2 sm:grid-cols-2">
+              {[
+                "10+ Projects Built",
+                "1K+ Users Impacted",
+                "Hackathon Winner",
+              ].map((stat) => (
+                <div
+                  key={stat}
+                  className="rounded-xl border border-slate-800/60 bg-slate-950/60 px-3 py-2 text-[11px] text-slate-100 shadow-[0_0_30px_rgba(16,185,129,0.06)]"
+                >
+                  {stat}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <div className="flex flex-wrap gap-2 pt-2">
+              <motion.button
+                type="button"
+                whileTap={{ scale: 0.98 }}
+                animate={
+                  isEmailCopied
+                    ? { scale: 1.01, boxShadow: "0 0 40px rgba(16,185,129,0.25)" }
+                    : undefined
+                }
+                transition={{ duration: 0.18 }}
+                onClick={() => {
+                  void copyEmailToClipboard();
+                }}
+                className={`btn-secondary ${
+                  isEmailCopied
+                    ? "border-emerald-500/70 bg-emerald-500/10 text-emerald-200 hover:text-emerald-100"
+                    : ""
+                }`}
+              >
+                <span className="inline-flex items-center gap-2">
+                  <span className="text-base leading-none">
+                    {isEmailCopied ? "✓" : "⎘"}
+                  </span>
+                  <span>{isEmailCopied ? "Email Copied" : "Copy Email"}</span>
+                </span>
+              </motion.button>
+
+              <a
+                href={`https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(
+                  profile.email,
+                )}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn-secondary"
+              >
+                Open Gmail
+              </a>
+
+              <a
+                href={profile.linkedin}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn-secondary"
+              >
+                LinkedIn
+              </a>
             </div>
           </div>
         </motion.div>
