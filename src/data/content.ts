@@ -111,12 +111,12 @@ export const projects = [
   description:
     "This portfolio is a modern, single-page personal website showcasing my experience, projects, skills, and achievements, with smooth animations and a responsive UI. It also includes a secure contact/referral form with bot protection, validation, and rate limiting so recruiters or collaborators can reach out safely.",
   bullets: [
-    "✔️ Cloudflare Turnstile verification in frontend and server-side token validation",
-    "✔️ IP-based fixed-window rate limiting",
-    "✔️ Zod schema for name/email/message and referral mode checks",
-    "✔️ Implemented Anti-spam honeypot method",
+    "Cloudflare Turnstile verification in frontend and server-side token validation",
+    "IP-based fixed-window rate limiting",
+    "Zod schema for name/email/message and referral mode checks",
+    "Implemented Anti-spam honeypot method",
   ],
-  tags: ["Next.js", "React", "Tailwind CSS", "Resend", "Upstash Redis", "Zod", "Cloudfair Turnstile"],
+  tags: ["Next.js", "React", "Tailwind CSS", "Resend", "Upstash Redis", "Zod", "Cloudfair Turnstile", "Framer Motion", "Vercel"],
   codeUrl: "https://github.com/Tanishq6210/tanishqtyagi.in",
   demoUrl: "https://tanishqtyagi.in"
 },
@@ -125,25 +125,25 @@ export const projects = [
   period: "April 2023",
   description:
     "Decentralized NGO donation platform ensuring transparent, tamper-proof contributions using blockchain.",
-  bullets: [
-    "✔️ Built smart contract-based donation system enabling direct, trustless transfers to NGOs.",
-    "✔️ Enabled real-time transaction tracking with full on-chain transparency.",
-    "✔️ Integrated Push Protocol for instant donation notifications.",
-    "✔️ Used Polybase as a decentralized database for NGO data management.",
+  bullets: [``
+    "Built smart contract-based donation system enabling direct, trustless transfers to NGOs.",
+    "Enabled real-time transaction tracking with full on-chain transparency.",
+    "Integrated Push Protocol for instant donation notifications.",
+    "Used Polybase as a decentralized database for NGO data management.",
   ],
   tags: ["React", "Solidity", "Ethers.js", "Scroll", "Polybase", "Web3"],
   codeUrl: "https://github.com/Tanishq6210/Donate4Change",
   demoUrl: "https://ethglobal.com/showcase/donate4change-jnnje"
 },
 {
-  name: "ClearVote",
+  name: "ClearVote",``
   period: "Feb 2023",
   description:
     "Blockchain-based voting platform ensuring transparency and tamper-proof elections.",
   bullets: [
-    "✔️ Built secure smart contracts using Solidity.",
-    "✔️ Integrated Web3.js for seamless blockchain interaction.",
-    "✔️ Enabled social authentication via Arcana.",
+    "Built secure smart contracts using Solidity.",
+    "Integrated Web3.js for seamless blockchain interaction.",
+    "Enabled social authentication via Arcana.",
   ],
   tags: ["React", "Solidity", "Web3"],
   codeUrl: "https://github.com/Tanishq6210/Voting_Dapp",
@@ -155,9 +155,9 @@ export const projects = [
   description:
     "Android app helping students navigate university resources.",
   bullets: [
-    "✔️ Reached 1,000+ downloads with curated academic resources.",
-    "✔️ Implemented MVVM architecture for scalable design.",
-    "✔️ Integrated 10+ APIs using Retrofit.",
+    "Reached 1,000+ downloads with curated academic resources.",
+    "Implemented MVVM architecture for scalable design.",
+    "Integrated 10+ APIs using Retrofit.",
   ],
   tags: ["Kotlin", "Android", "MVVM"],
   codeUrl: "https://github.com/Tanishq6210/Atlas-Kotlin/tree/main/Atlas",

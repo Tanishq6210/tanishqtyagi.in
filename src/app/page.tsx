@@ -3,6 +3,7 @@
 import Script from "next/script";
 import { motion, useReducedMotion } from "framer-motion";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
+import { SendHorizontal, SquareArrowOutUpRight } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import {
   profile,
@@ -523,8 +524,11 @@ function ExperienceSection() {
             </div>
             <ul className="mt-1 space-y-1.5 text-xs text-slate-300">
               {exp.bullets.map((bullet) => (
-                <li key={bullet} className="leading-relaxed">
-                  {bullet}
+                <li key={bullet} className="flex items-start gap-2 leading-relaxed">
+                  <span className="mt-0.5 text-emerald-300/90">
+                    <SendHorizontal size={14} />
+                  </span>
+                  <span>{bullet}</span>
                 </li>
               ))}
             </ul>
@@ -575,9 +579,50 @@ function ProjectsSection() {
         {projects.map((project) => (
           <motion.article
             key={project.name}
-            className="card flex flex-col gap-3 transition-transform hover:-translate-y-1"
+            className="card relative flex flex-col gap-3 transition-transform hover:-translate-y-1"
             variants={cardVariants}
           >
+            <div className="absolute right-5 top-5 flex items-center gap-2">
+              {project.codeUrl ? (
+                <a
+                  href={project.codeUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-slate-400 transition hover:text-emerald-300"
+                  aria-label={`Open code for ${project.name}`}
+                  title={`Open ${project.name} code`}
+                >
+                  <img
+                    src="/github-white-icon.png"
+                    alt=""
+                    width={18}
+                    height={18}
+                    decoding="async"
+                    className="github-contact-icon--dark-theme h-[18px] w-[18px] shrink-0 object-contain opacity-90"
+                  />
+                  <img
+                    src="/github-icon.png"
+                    alt=""
+                    width={18}
+                    height={18}
+                    decoding="async"
+                    className="github-contact-icon--light-theme h-[18px] w-[18px] shrink-0 object-contain opacity-90"
+                  />
+                </a>
+              ) : null}
+              {project.demoUrl ? (
+                <a
+                  href={project.demoUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-slate-400 transition hover:text-emerald-300"
+                  aria-label={`Open demo for ${project.name}`}
+                  title={`Open ${project.name} demo`}
+                >
+                  <SquareArrowOutUpRight size={18} />
+                </a>
+              ) : null}
+            </div>
             <div className="flex items-start justify-between gap-2">
               <div>
                 <h3 className="text-sm font-semibold text-slate-100">
@@ -590,6 +635,7 @@ function ProjectsSection() {
             <ul className="mt-1 space-y-1.5 text-xs text-slate-300">
               {project.bullets.map((bullet) => (
                 <li key={bullet} className="leading-relaxed">
+                  <span className="mr-1">✔️ </span>
                   {bullet}
                 </li>
               ))}
@@ -600,42 +646,6 @@ function ProjectsSection() {
                   {tag}
                 </span>
               ))}
-            </div>
-            <div className="mt-auto flex items-center gap-3 text-xs">
-              {project.codeUrl ? (
-                <a
-                  href={project.codeUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="btn-primary px-3 py-1.5 text-xs"
-                >
-                  Code
-                </a>
-              ) : (
-                <span
-                  className="btn-primary px-3 py-1.5 text-xs invisible"
-                  aria-hidden="true"
-                >
-                  Code
-                </span>
-              )}
-              {project.demoUrl ? (
-                <a
-                  href={project.demoUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="btn-secondary px-3 py-1.5 text-xs"
-                >
-                  Demo
-                </a>
-              ) : (
-                <span
-                  className="btn-secondary px-3 py-1.5 text-xs invisible"
-                  aria-hidden="true"
-                >
-                  Demo
-                </span>
-              )}
             </div>
           </motion.article>
         ))}
