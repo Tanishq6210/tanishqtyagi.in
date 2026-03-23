@@ -140,6 +140,34 @@ html[data-theme="light"] .nav-link {
   @apply inline-flex items-center justify-center gap-2 rounded-full border border-slate-700 bg-slate-900 px-5 py-2.5 text-sm font-semibold text-slate-100 shadow-lg shadow-black/40 transition-transform transition-shadow transition-colors duration-150 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-black/60 hover:border-emerald-400 hover:text-emerald-300;
 }
 
+.sending-dots {
+  display: inline-flex;
+  align-items: baseline;
+}
+
+.sending-dots__dot {
+  opacity: 0;
+  animation: sending-dots-fade 1.2s infinite ease-in-out;
+}
+
+.sending-dots__dot:nth-child(4) {
+  animation-delay: 0.2s;
+}
+
+.sending-dots__dot:nth-child(5) {
+  animation-delay: 0.4s;
+}
+
+@keyframes sending-dots-fade {
+  0%,
+  100% {
+    opacity: 0;
+  }
+  45% {
+    opacity: 1;
+  }
+}
+
 html[data-theme="light"] .btn-secondary {
   @apply border-slate-200 bg-white text-slate-800 shadow-slate-200/80 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-emerald-300/40 hover:border-emerald-400 hover:text-emerald-700;
 }

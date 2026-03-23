@@ -1397,7 +1397,21 @@ function ContactSection() {
                 disabled={status === "submitting" || !siteKey}
               >
                 {status === "submitting"
-                  ? "Sending..."
+                  ? (
+                    <span className="sending-dots" aria-live="polite">
+                      <span className="sr-only">Sending</span>
+                      <span aria-hidden="true">Sending</span>
+                      <span className="sending-dots__dot" aria-hidden="true">
+                        .
+                      </span>
+                      <span className="sending-dots__dot" aria-hidden="true">
+                        .
+                      </span>
+                      <span className="sending-dots__dot" aria-hidden="true">
+                        .
+                      </span>
+                    </span>
+                  )
                   : isReferral
                     ? "Request Referral"
                     : "Send Message"}

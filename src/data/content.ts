@@ -215,17 +215,17 @@ export const awards = [
     title: "Aspiring Innovator Award",
     issuer: "Societe Generale",
     description:
-      "Recognized for delivering 30% more effective solutions by deeply understanding user requirements and ensuring on-time delivery across multiple projects.",
+      "Recognized for delivering 30% more effective solutions by deeply understanding user requirements and ensuring on-time delivery across multiple projects",
   },
   {
     title: "Bounties @ Scaling Ethereum, ETH Global",
     issuer: "Polybase & Scroll Network",
-    description: "Won bounties for the Donate4Change project.",
+    description: "Awarded ETHGlobal Scaling Ethereum bounty for building Donate4Change on Polybase and Scroll Network",
   },
   {
     title: "Bounties @ EthForAll, Devfolio",
     issuer: "Arcana Network",
-    description: "Won bounty for the ClearVote project.",
+    description: "Awarded Devfolio EthForAll bounty for building ClearVote using Arcana Network",
   },
 ];
 
