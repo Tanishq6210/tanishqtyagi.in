@@ -48,27 +48,64 @@ Tanishq Tyagi`,
 export const skills = [
   {
     category: "Programming Languages",
-    items: ["Java", "Python", "SQL", "C++", "Kotlin"],
+    items: [
+      { name: "Java", isPrimary: true },
+      { name: "C++", isPrimary: true },
+      { name: "SQL", isPrimary: true },
+      { name: "React JS", isPrimary: true},
+      { name: "Python", isPrimary: false },
+      { name: "Kotlin", isPrimary: false },
+      { name: "Solidity", isPrimary: false},
+      { name: "Next.js", isPrimary: false},
+      { name: "Tailwind CSS", isPrimary: false}
+    ],
   },
   {
-    category: "Backend Engineering",
-    items: ["Spring Boot", "REST APIs", "Microservices", "JPA/Hibernate"],
+    category: "API & Backend Architecture",
+    items: [
+      { name: "SpringBoot", isPrimary: true },
+      { name: "REST APIs", isPrimary: true },
+      { name: "Microservices", isPrimary: true },
+      { name: "JPA/Hibernate", isPrimary: true },
+      { name: "OAuth", isPrimary: false},
+      { name: "Authentication (JWT / OAuth)", isPrimary: false},
+      { name: "Redis", isPrimary: false},
+      { name: "GraphQL", isPrimary: false}
+    ],
   },
   {
-    category: "DevOps",
-    items: ["Docker", "Kubernetes", "Jenkins", "CI/CD"],
+    category: "Deployment & Infrastructure",
+    items: [
+      { name: "Docker", isPrimary: true },
+      { name: "Jenkins", isPrimary: true },
+      { name: "CI/CD pipelines", isPrimary: true },
+      { name: "Kubernetes", isPrimary: false },
+    ],
   },
   {
     category: "Databases",
-    items: ["PostgreSQL", "MySQL", "MongoDB"],
-  },
-  {
-    category: "ML/NLP",
-    items: ["NER (Named Entity Recognition Model)", "Model Evaluation", "GPU Inference"],
+    items: [
+      { name: "postgres", isPrimary: true },
+      { name: "mySQL", isPrimary: true },
+      { name: "MongoDB", isPrimary: false },
+    ],
   },
   {
     category: "Computer Science Fundamentals",
-    items: ["Data Structures & Algorigthms", "Object Oriented Programmign", "Operating Systems", "Database Management Systems"],
+    items: [
+      { name: "Data Structures & Algorigthms", isPrimary: true },
+      { name: "Object Oriented Programmign", isPrimary: true },
+      { name: "Database Management Systems", isPrimary: true },
+      { name: "Operating Systems", isPrimary: false },
+    ],
+  },
+    {
+    category: "ML/NLP",
+    items: [
+      { name: "Named Entity Recognition Model (NER)", isPrimary: false },
+      { name: "Model Evaluation", isPrimary: false },
+      { name: "GPU Inference", isPrimary: false },
+    ],
   },
 ];
 

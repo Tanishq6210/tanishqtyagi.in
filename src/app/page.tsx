@@ -3,7 +3,12 @@
 import Script from "next/script";
 import { motion, useReducedMotion } from "framer-motion";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
-import { SendHorizontal, SquareArrowOutUpRight } from "lucide-react";
+import {
+  Code2,
+  FolderCode,
+  SendHorizontal,
+  SquareArrowOutUpRight,
+} from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import {
   profile,
@@ -435,7 +440,8 @@ function SkillsSection() {
         <div className="flex items-center gap-3">
           <span className="h-8 w-1 rounded-full bg-emerald-500/80" />
           <div>
-            <h2 className="text-xl font-semibold text-slate-50 sm:text-2xl">
+            <h2 className="flex items-center gap-2 text-xl font-semibold text-slate-50 sm:text-2xl">
+              <Code2 size={18} className="text-emerald-300" aria-hidden="true" />
               Technical Skills
             </h2>
             <p className="mt-1 text-xs text-slate-400 sm:text-sm">
@@ -457,13 +463,17 @@ function SkillsSection() {
             className="card transition-transform hover:-translate-y-1"
             variants={cardVariants}
           >
-            <h3 className="text-sm font-semibold text-slate-100">
+            <h3 className="flex items-center gap-2 text-sm font-semibold text-slate-100">
+              <FolderCode size={14} className="text-emerald-300/90" aria-hidden="true" />
               {group.category}
             </h3>
             <div className="mt-3 flex flex-wrap gap-2">
               {group.items.map((skillItem) => (
-                <span key={skillItem} className="tag-pill">
-                  {skillItem}
+                <span
+                  key={skillItem.name}
+                  className={`tag-pill ${skillItem.isPrimary ? "tag-pill--primary" : ""}`}
+                >
+                  {skillItem.name}
                 </span>
               ))}
             </div>
