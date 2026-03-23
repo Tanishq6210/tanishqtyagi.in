@@ -318,19 +318,19 @@ function Hero() {
           </p>
           {prefersReducedMotion ? (
             <>
-              <h1 className="text-[clamp(2.2rem,1.6rem+2vw,3.2rem)] font-semibold tracking-tight text-slate-50">
+              <h1 className="text-4xl font-semibold tracking-tight text-slate-50 sm:text-5xl">
                 {fullName}
               </h1>
-              <p className="text-[clamp(1.2rem,1rem+0.8vw,1.5rem)] font-medium text-slate-300">
+              <p className="text-lg font-medium text-slate-300 sm:text-xl">
                 {profile.roles.join(" · ")}
               </p>
-              <p className="max-w-xl text-base leading-relaxed text-slate-300">
+              <p className="max-w-xl text-sm leading-relaxed text-slate-300 sm:text-base">
                 {profile.summary}
               </p>
             </>
           ) : (
             <>
-              <h1 className="text-[clamp(2.2rem,1.6rem+2vw,3.2rem)] font-semibold tracking-tight text-slate-50">
+              <h1 className="text-4xl font-semibold tracking-tight text-slate-50 sm:text-5xl">
                 {fullName.slice(0, nameIndex)}
                 <span className="inline-block w-1.5 ml-1 h-5 align-middle bg-emerald-400/80 animate-pulse rounded-sm" />
               </h1>
@@ -340,13 +340,13 @@ function Hero() {
         {!prefersReducedMotion && (
           <div className="space-y-2 min-h-[4.5rem] sm:min-h-[5rem]">
             {/* Roles line: keep constant vertical space to avoid layout shift */}
-            <p className="text-[clamp(1.2rem,1rem+0.8vw,1.5rem)] font-medium text-slate-300 min-h-[1.75rem]">
+            <p className="text-lg font-medium text-slate-300 sm:text-xl min-h-[1.75rem]">
               {roleIndex === 0
                 ? "\u00A0"
                 : roles[roleIdx].slice(0, roleIndex)}
             </p>
             {/* Description: types once, stays fixed below roles, with reserved space */}
-            <p className="max-w-xl text-base leading-relaxed text-slate-300">
+            <p className="max-w-xl text-sm leading-relaxed text-slate-300 sm:text-base">
               {descriptionIndex === 0
                 ? "\u00A0"
                 : profile.summary.slice(0, descriptionIndex || 0)}
@@ -451,11 +451,11 @@ function SkillsSection() {
         <div className="flex items-center gap-3">
           <span className="h-8 w-1 rounded-full bg-emerald-500/80" />
           <div>
-            <h2 className="flex items-center gap-2 text-[clamp(1.6rem,1.2rem+1vw,2.2rem)] font-semibold text-slate-50">
+            <h2 className="flex items-center gap-2 text-xl font-semibold text-slate-50 sm:text-2xl">
               <Code2 size={18} className="text-emerald-300" aria-hidden="true" />
               Technical Skills
             </h2>
-            <p className="mt-1 text-sm text-slate-400">
+            <p className="mt-1 text-xs text-slate-400 sm:text-sm">
               A snapshot of the tools and technologies I work with.
             </p>
           </div>
@@ -474,7 +474,7 @@ function SkillsSection() {
             className="card transition-transform hover:-translate-y-1"
             variants={cardVariants}
           >
-            <h3 className="flex items-center gap-2 text-[clamp(1.1rem,0.9rem+0.6vw,1.35rem)] font-semibold text-slate-100">
+            <h3 className="flex items-center gap-2 text-sm font-semibold text-slate-100">
               <FolderCode size={14} className="text-emerald-300/90" aria-hidden="true" />
               {group.category}
             </h3>
@@ -509,11 +509,11 @@ function ExperienceSection() {
         <div className="flex items-center gap-3">
           <span className="h-8 w-1 rounded-full bg-emerald-500/80" />
           <div>
-            <h2 className="flex items-center gap-2 text-[clamp(1.6rem,1.2rem+1vw,2.2rem)] font-semibold text-slate-50">
+            <h2 className="flex items-center gap-2 text-xl font-semibold text-slate-50 sm:text-2xl">
               <BriefcaseBusiness size={18} className="text-emerald-300" aria-hidden="true" />
               Experience
             </h2>
-            <p className="mt-1 text-sm text-slate-400">
+            <p className="mt-1 text-xs text-slate-400 sm:text-sm">
               Roles where I&apos;ve built production systems at scale
             </p>
           </div>
@@ -534,17 +534,17 @@ function ExperienceSection() {
           >
             <div className="flex items-start justify-between gap-2">
               <div>
-                <h3 className="text-[clamp(1.1rem,0.9rem+0.6vw,1.35rem)] font-semibold text-slate-100">
+                <h3 className="text-sm font-semibold text-slate-100">
                   {exp.role}
                 </h3>
-                <p className="text-sm text-slate-400">{exp.company}</p>
+                <p className="text-xs text-slate-400">{exp.company}</p>
               </div>
-              <div className="text-right text-sm text-slate-400">
+              <div className="text-right text-[11px] text-slate-400">
                 <p>{exp.period}</p>
                 <p>{exp.location}</p>
               </div>
             </div>
-            <ul className="mt-1 space-y-1.5 text-base text-slate-300">
+            <ul className="mt-1 space-y-1.5 text-xs text-slate-300">
               {exp.bullets.map((bullet) => (
                 <li key={bullet} className="flex items-start gap-2 leading-relaxed">
                   <span className="mt-0.5 text-emerald-300/90">
@@ -582,11 +582,11 @@ function ProjectsSection() {
         <div className="flex items-center gap-3">
           <span className="h-8 w-1 rounded-full bg-emerald-500/80" />
           <div>
-            <h2 className="flex items-center gap-2 text-[clamp(1.6rem,1.2rem+1vw,2.2rem)] font-semibold text-slate-50">
+            <h2 className="flex items-center gap-2 text-xl font-semibold text-slate-50 sm:text-2xl">
               <FolderCode size={18} className="text-emerald-300" aria-hidden="true" />
               Projects
             </h2>
-            <p className="mt-1 text-sm text-slate-400">
+            <p className="mt-1 text-xs text-slate-400 sm:text-sm">
               Selected work spanning Web3, backend, and mobile.
             </p>
           </div>
@@ -648,14 +648,14 @@ function ProjectsSection() {
             </div>
             <div className="flex items-start justify-between gap-2">
               <div>
-                <h3 className="text-[clamp(1.1rem,0.9rem+0.6vw,1.35rem)] font-semibold text-slate-100">
+                <h3 className="text-sm font-semibold text-slate-100">
                   {project.name}
                 </h3>
-                <p className="text-sm text-slate-400">{project.period}</p>
+                <p className="text-[11px] text-slate-400">{project.period}</p>
               </div>
             </div>
-            <p className="text-base text-slate-300">{project.description}</p>
-            <ul className="mt-1 space-y-1.5 text-base text-slate-300">
+            <p className="text-xs text-slate-300">{project.description}</p>
+            <ul className="mt-1 space-y-1.5 text-xs text-slate-300">
               {project.bullets.map((bullet) => (
                 <li key={bullet} className="leading-relaxed">
                   <span className="mr-1">✔️ </span>
@@ -693,11 +693,11 @@ function AwardsSection() {
         <div className="flex items-center gap-3">
           <span className="h-8 w-1 rounded-full bg-emerald-500/80" />
           <div>
-            <h2 className="flex items-center gap-2 text-[clamp(1.6rem,1.2rem+1vw,2.2rem)] font-semibold text-slate-50">
+            <h2 className="flex items-center gap-2 text-xl font-semibold text-slate-50 sm:text-2xl">
               <Trophy size={18} className="text-emerald-300" aria-hidden="true" />
               Awards & Bounties
             </h2>
-            <p className="mt-1 text-sm text-slate-400">
+            <p className="mt-1 text-xs text-slate-400 sm:text-sm">
               Recognition for impact, innovation, and delivery.
             </p>
           </div>
@@ -716,11 +716,11 @@ function AwardsSection() {
             className="card space-y-2 transition-transform hover:-translate-y-1"
             variants={cardVariants}
           >
-            <h3 className="text-[clamp(1.1rem,0.9rem+0.6vw,1.35rem)] font-semibold text-slate-100">
+            <h3 className="text-sm font-semibold text-slate-100">
               {award.title}
             </h3>
-            <p className="text-sm text-emerald-300">{award.issuer}</p>
-            <p className="text-base text-slate-300">{award.description}</p>
+            <p className="text-[11px] text-emerald-300">{award.issuer}</p>
+            <p className="text-xs text-slate-300">{award.description}</p>
           </motion.article>
         ))}
       </motion.div>
@@ -955,11 +955,11 @@ function ContactSection() {
         <div className="flex items-center gap-3">
           <span className="h-8 w-1 rounded-full bg-emerald-500/80" />
           <div>
-            <h2 className="flex items-center gap-2 text-[clamp(1.6rem,1.2rem+1vw,2.2rem)] font-semibold text-slate-50">
+            <h2 className="flex items-center gap-2 text-xl font-semibold text-slate-50 sm:text-2xl">
               <MessageSquare size={18} className="text-emerald-300" aria-hidden="true" />
               Contact Me
             </h2>
-            <p className="mt-1 text-sm text-slate-400">
+            <p className="mt-1 text-xs text-slate-400 sm:text-sm">
               Let&apos;s talk about building something impactful together.
             </p>
           </div>
@@ -1015,10 +1015,10 @@ function ContactSection() {
             <p className="text-[11px] font-semibold uppercase tracking-widest text-slate-400">
               LET&apos;S WORK TOGETHER
             </p>
-            <h3 className="mt-2 text-[clamp(1.1rem,0.9rem+0.6vw,1.35rem)] font-semibold text-slate-50">
+            <h3 className="mt-2 text-lg font-semibold text-slate-50">
               Opportunities & Collaboration
             </h3>
-            <div className="mt-3 space-y-2 text-base text-slate-200">
+            <div className="mt-3 space-y-2 text-xs text-slate-200">
               <p>
                 Prefer backend engineering roles and distributed systems work
               </p>
@@ -1026,14 +1026,14 @@ function ContactSection() {
                 Happy to collaborate on impactful projects and open-source
                 contributions 🚀
               </p>
-              <p className="text-sm text-slate-400">
+              <p className="text-[11px] text-slate-400">
                 For fastest response, use the form in the portfolio.
               </p>
             </div>
           </div>
 
           <div>
-            <h4 className="text-sm font-semibold text-slate-300">
+            <h4 className="text-[11px] font-semibold text-slate-300">
               What you can reach out for:
             </h4>
             <ul className="mt-2 space-y-2">
@@ -1049,7 +1049,7 @@ function ContactSection() {
                 .map((item) => (
                 <li
                   key={item}
-                  className="flex items-start gap-2 text-base text-slate-200"
+                  className="flex items-start gap-2 text-xs text-slate-200"
                 >
                   <span className="mt-1 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-emerald-400 shadow-[0_0_14px_rgba(16,185,129,0.35)]" />
                   <span>{item}</span>
@@ -1059,7 +1059,7 @@ function ContactSection() {
           </div>
 
           <div>
-            <h4 className="text-sm font-semibold text-slate-300">
+            <h4 className="text-[11px] font-semibold text-slate-300">
               Impact Snapshot
             </h4>
             <div className="mt-2 grid grid-cols-1 gap-2 sm:grid-cols-2">
@@ -1071,7 +1071,7 @@ function ContactSection() {
               ].map((stat) => (
                 <div
                   key={stat}
-                  className="impact-badge-card rounded-xl border border-slate-800/60 bg-slate-950/60 px-3 py-2 text-sm text-slate-100 shadow-[0_0_30px_rgba(16,185,129,0.06)]"
+                  className="impact-badge-card rounded-xl border border-slate-800/60 bg-slate-950/60 px-3 py-2 text-[11px] text-slate-100 shadow-[0_0_30px_rgba(16,185,129,0.06)]"
                 >
                   {stat}
                 </div>
@@ -1225,10 +1225,10 @@ function ContactSection() {
           <div className="flex flex-col gap-3">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <div>
-                <h3 className="text-[clamp(1.1rem,0.9rem+0.6vw,1.35rem)] font-semibold text-slate-100">
+                <h3 className="text-sm font-semibold text-slate-100">
                   {isReferral ? "Ask for referral" : "Send a Message"}
                 </h3>
-                <p className="mt-1 text-sm text-slate-400">
+                <p className="mt-1 text-xs text-slate-400">
                   {isReferral ? (
                     <>
                       Get relevant Job ID from {" "}
@@ -1415,7 +1415,7 @@ function ContactSection() {
                 {isReferral ? "Upload Resume" : "Upload Document"}
               </button>
               {resumeFile && (
-                <div className="flex items-center gap-2 text-sm text-slate-300">
+                <div className="flex items-center gap-2 text-[11px] text-slate-300">
                   <span className="max-w-[160px] truncate">
                     {resumeFile.name}
                   </span>
