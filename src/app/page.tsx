@@ -719,7 +719,9 @@ function AwardsSection() {
             <h3 className="text-sm font-semibold text-slate-100">
               {award.title}
             </h3>
-            <p className="text-[11px] text-emerald-300">{award.issuer}</p>
+            <p className="text-[11px] text-emerald-300">
+              {award.issuer} · {award.date}
+            </p>
             <p className="text-xs text-slate-300">{award.description}</p>
           </motion.article>
         ))}
