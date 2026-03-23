@@ -1,8 +1,19 @@
 "use client";
 
 import Script from "next/script";
-import { motion, useReducedMotion } from "framer-motion";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
+import {
+  BriefcaseBusiness,
+  CircleX,
+  Code2,
+  FolderCode,
+  MessageSquare,
+  SendHorizontal,
+  SquareArrowOutUpRight,
+  Trophy,
+  X,
+} from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import {
   profile,
@@ -204,6 +215,7 @@ function Hero() {
   const prefersReducedMotion = useReducedMotion();
   const fullName = profile.name;
   const roles = profile.roles;
+  const isAvailableForWork = profile.availableForWork === true;
 
   const [nameIndex, setNameIndex] = useState(
     prefersReducedMotion ? fullName.length : 0,
@@ -290,9 +302,14 @@ function Hero() {
     >
       <div className="max-w-xl space-y-6">
         <div className="flex items-center gap-3">
-          <span className="badge-soft">{profile.availabilityBadge}</span>
+          <span className="badge-soft">
+            {isAvailableForWork
+              ? profile.availabilityBadge
+              : "Software Engineer @VISA"}
+          </span>
           <span className="text-xs text-slate-400">
-            {profile.location} · Open to roles
+            {profile.location}
+            {isAvailableForWork ? " · Open to roles" : ""}
           </span>
         </div>
         <div className="space-y-3">
@@ -339,7 +356,7 @@ function Hero() {
         <div className="flex flex-wrap items-center gap-4">
           <a
             href={profile.resumePublicPath}
-            download="Resume_Tanishq_2026.pdf"
+            download="Resume_Tanishq_Tyagi"
             className="btn-primary"
           >
             Download Resume
@@ -434,7 +451,8 @@ function SkillsSection() {
         <div className="flex items-center gap-3">
           <span className="h-8 w-1 rounded-full bg-emerald-500/80" />
           <div>
-            <h2 className="text-xl font-semibold text-slate-50 sm:text-2xl">
+            <h2 className="flex items-center gap-2 text-xl font-semibold text-slate-50 sm:text-2xl">
+              <Code2 size={18} className="text-emerald-300" aria-hidden="true" />
               Technical Skills
             </h2>
             <p className="mt-1 text-xs text-slate-400 sm:text-sm">
@@ -456,13 +474,17 @@ function SkillsSection() {
             className="card transition-transform hover:-translate-y-1"
             variants={cardVariants}
           >
-            <h3 className="text-sm font-semibold text-slate-100">
+            <h3 className="flex items-center gap-2 text-sm font-semibold text-slate-100">
+              <FolderCode size={14} className="text-emerald-300/90" aria-hidden="true" />
               {group.category}
             </h3>
             <div className="mt-3 flex flex-wrap gap-2">
               {group.items.map((skillItem) => (
-                <span key={skillItem} className="tag-pill">
-                  {skillItem}
+                <span
+                  key={skillItem.name}
+                  className={`tag-pill ${skillItem.isPrimary ? "tag-pill--primary" : ""}`}
+                >
+                  {skillItem.name}
                 </span>
               ))}
             </div>
@@ -487,11 +509,12 @@ function ExperienceSection() {
         <div className="flex items-center gap-3">
           <span className="h-8 w-1 rounded-full bg-emerald-500/80" />
           <div>
-            <h2 className="text-xl font-semibold text-slate-50 sm:text-2xl">
+            <h2 className="flex items-center gap-2 text-xl font-semibold text-slate-50 sm:text-2xl">
+              <BriefcaseBusiness size={18} className="text-emerald-300" aria-hidden="true" />
               Experience
             </h2>
             <p className="mt-1 text-xs text-slate-400 sm:text-sm">
-              Roles where I&apos;ve built production systems at scale.
+              Roles where I&apos;ve built production systems at scale
             </p>
           </div>
         </div>
@@ -523,8 +546,11 @@ function ExperienceSection() {
             </div>
             <ul className="mt-1 space-y-1.5 text-xs text-slate-300">
               {exp.bullets.map((bullet) => (
-                <li key={bullet} className="leading-relaxed">
-                  {bullet}
+                <li key={bullet} className="flex items-start gap-2 leading-relaxed">
+                  <span className="mt-0.5 text-emerald-300/90">
+                    <SendHorizontal size={14} />
+                  </span>
+                  <span>{bullet}</span>
                 </li>
               ))}
             </ul>
@@ -556,7 +582,8 @@ function ProjectsSection() {
         <div className="flex items-center gap-3">
           <span className="h-8 w-1 rounded-full bg-emerald-500/80" />
           <div>
-            <h2 className="text-xl font-semibold text-slate-50 sm:text-2xl">
+            <h2 className="flex items-center gap-2 text-xl font-semibold text-slate-50 sm:text-2xl">
+              <FolderCode size={18} className="text-emerald-300" aria-hidden="true" />
               Projects
             </h2>
             <p className="mt-1 text-xs text-slate-400 sm:text-sm">
@@ -575,9 +602,50 @@ function ProjectsSection() {
         {projects.map((project) => (
           <motion.article
             key={project.name}
-            className="card flex flex-col gap-3 transition-transform hover:-translate-y-1"
+            className="card relative flex flex-col gap-3 transition-transform hover:-translate-y-1"
             variants={cardVariants}
           >
+            <div className="absolute right-5 top-5 flex items-center gap-2">
+              {project.codeUrl ? (
+                <a
+                  href={project.codeUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="project-github-link text-slate-400 transition hover:text-emerald-300"
+                  aria-label={`Open code for ${project.name}`}
+                  title={`Open ${project.name} code`}
+                >
+                  <img
+                    src="/github-white-icon.png"
+                    alt=""
+                    width={18}
+                    height={18}
+                    decoding="async"
+                    className="github-contact-icon--dark-theme h-[18px] w-[18px] shrink-0 object-contain opacity-90"
+                  />
+                  <img
+                    src="/github-icon.png"
+                    alt=""
+                    width={18}
+                    height={18}
+                    decoding="async"
+                    className="github-contact-icon--light-theme h-[18px] w-[18px] shrink-0 object-contain opacity-90"
+                  />
+                </a>
+              ) : null}
+              {project.demoUrl ? (
+                <a
+                  href={project.demoUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="project-action-link text-slate-400 transition hover:text-emerald-300"
+                  aria-label={`Open demo for ${project.name}`}
+                  title={`Open ${project.name} demo`}
+                >
+                  <SquareArrowOutUpRight size={18} />
+                </a>
+              ) : null}
+            </div>
             <div className="flex items-start justify-between gap-2">
               <div>
                 <h3 className="text-sm font-semibold text-slate-100">
@@ -590,6 +658,7 @@ function ProjectsSection() {
             <ul className="mt-1 space-y-1.5 text-xs text-slate-300">
               {project.bullets.map((bullet) => (
                 <li key={bullet} className="leading-relaxed">
+                  <span className="mr-1">✔️ </span>
                   {bullet}
                 </li>
               ))}
@@ -600,42 +669,6 @@ function ProjectsSection() {
                   {tag}
                 </span>
               ))}
-            </div>
-            <div className="mt-auto flex items-center gap-3 text-xs">
-              {project.codeUrl ? (
-                <a
-                  href={project.codeUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="btn-primary px-3 py-1.5 text-xs"
-                >
-                  Code
-                </a>
-              ) : (
-                <span
-                  className="btn-primary px-3 py-1.5 text-xs invisible"
-                  aria-hidden="true"
-                >
-                  Code
-                </span>
-              )}
-              {project.demoUrl ? (
-                <a
-                  href={project.demoUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="btn-secondary px-3 py-1.5 text-xs"
-                >
-                  Demo
-                </a>
-              ) : (
-                <span
-                  className="btn-secondary px-3 py-1.5 text-xs invisible"
-                  aria-hidden="true"
-                >
-                  Demo
-                </span>
-              )}
             </div>
           </motion.article>
         ))}
@@ -660,7 +693,8 @@ function AwardsSection() {
         <div className="flex items-center gap-3">
           <span className="h-8 w-1 rounded-full bg-emerald-500/80" />
           <div>
-            <h2 className="text-xl font-semibold text-slate-50 sm:text-2xl">
+            <h2 className="flex items-center gap-2 text-xl font-semibold text-slate-50 sm:text-2xl">
+              <Trophy size={18} className="text-emerald-300" aria-hidden="true" />
               Awards & Bounties
             </h2>
             <p className="mt-1 text-xs text-slate-400 sm:text-sm">
@@ -725,12 +759,14 @@ function ContactSection() {
   const modeRef = useRef<"message" | "referral">("message");
   const [showJobIdToast, setShowJobIdToast] = useState(false);
   const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [formErrorMessage, setFormErrorMessage] = useState<string | null>(null);
+  const [apiErrorBannerMessage, setApiErrorBannerMessage] = useState<string | null>(null);
   const [resumeFile, setResumeFile] = useState<File | null>(null);
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
-  const errorRef = useRef<HTMLDivElement | null>(null);
   const formRef = useRef<HTMLFormElement | null>(null);
   const pendingSubmissionRef = useRef(false);
+  const formErrorTimeoutRef = useRef<number | null>(null);
+  const apiErrorTimeoutRef = useRef<number | null>(null);
   const { showNotification } = useNotification();
 
   const siteKey = process.env.NEXT_PUBLIC_CLOUDFLARE_TURNSTILE_SITE_KEY;
@@ -764,28 +800,18 @@ function ContactSection() {
           setTurnstileToken(null);
           if (pendingSubmissionRef.current) {
             pendingSubmissionRef.current = false;
-            setStatus("error");
-            setErrorMessage(
+            showFormError(
               "Turnstile verification failed. Please complete the verification and try again.",
             );
-            setTimeout(() => {
-              setStatus("idle");
-              setErrorMessage(null);
-            }, TOAST_DURATION_MS);
           }
         },
         "timeout-callback": () => {
           setTurnstileToken(null);
           if (pendingSubmissionRef.current) {
             pendingSubmissionRef.current = false;
-            setStatus("error");
-            setErrorMessage(
+            showFormError(
               "Turnstile verification timed out. Please try again.",
             );
-            setTimeout(() => {
-              setStatus("idle");
-              setErrorMessage(null);
-            }, TOAST_DURATION_MS);
           }
         },
       });
@@ -816,15 +842,47 @@ function ContactSection() {
     modeRef.current = mode;
   }, [mode]);
 
-  useEffect(() => {
-    if (status !== "error") return;
-    if (!errorRef.current) return;
+  const clearFormErrorTimer = () => {
+    if (formErrorTimeoutRef.current !== null) {
+      window.clearTimeout(formErrorTimeoutRef.current);
+      formErrorTimeoutRef.current = null;
+    }
+  };
 
-    errorRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
-    errorRef.current.focus();
-  }, [status]);
+  const clearApiErrorTimer = () => {
+    if (apiErrorTimeoutRef.current !== null) {
+      window.clearTimeout(apiErrorTimeoutRef.current);
+      apiErrorTimeoutRef.current = null;
+    }
+  };
+
+  const showFormError = (message: string) => {
+    clearFormErrorTimer();
+    setStatus("error");
+    setFormErrorMessage(message);
+    formErrorTimeoutRef.current = window.setTimeout(() => {
+      setStatus("idle");
+      setFormErrorMessage(null);
+    }, TOAST_DURATION_MS);
+  };
+
+  const showApiErrorBanner = (message: string) => {
+    clearApiErrorTimer();
+    setApiErrorBannerMessage(message);
+    apiErrorTimeoutRef.current = window.setTimeout(() => {
+      setApiErrorBannerMessage(null);
+    }, TOAST_DURATION_MS);
+  };
+
+  useEffect(() => {
+    return () => {
+      clearFormErrorTimer();
+      clearApiErrorTimer();
+    };
+  }, []);
 
   const isReferral = mode === "referral";
+  const isAvailableForWork = profile.availableForWork === true;
 
   async function submitForm(form: HTMLFormElement, token: string) {
     const formData = new FormData(form);
@@ -834,36 +892,30 @@ function ContactSection() {
 
     try {
       setStatus("submitting");
+      setApiErrorBannerMessage(null);
+      clearApiErrorTimer();
 
       const response = await fetch(`/api/send-email`, {
         method: "POST",
         body: formData,
       });
-
-      if (response.status === 429) {
-        setStatus("error");
-        setErrorMessage(
-          "You’re sending messages too quickly. Please wait a few seconds and try again.",
-        );
-        return;
-      }
-
-      const data = (await response.json()) as {
-        success?: boolean;
-        error?: string;
-      };
+      const data = (await response.json().catch(() => null)) as
+        | {
+            success?: boolean;
+            error?: string;
+          }
+        | null;
 
       if (!response.ok || !data?.success) {
         setStatus("error");
-        setErrorMessage(
-          data?.error || "Something went wrong. Please try again.",
-        );
+        showApiErrorBanner(data?.error || "Something went wrong. Please try again.");
         return;
       }
 
       setStatus("success");
       form.reset();
       setMode("message");
+      setFormErrorMessage(null);
       // Clear resume attachment after successful submissi
       const resumeInput = document.getElementById(
         "resume",
@@ -881,15 +933,12 @@ function ContactSection() {
     } catch (error) {
       console.error("Failed to send contact form:", error);
       setStatus("error");
-      setErrorMessage("Something went wrong. Please try again.");
+      showApiErrorBanner("Something went wrong. Please try again.");
     } finally {
       pendingSubmissionRef.current = false;
       setTurnstileToken(null);
       window.turnstile?.reset?.();
-      setTimeout(() => {
-        setStatus("idle");
-        setErrorMessage(null);
-      }, TOAST_DURATION_MS);
+      setStatus("idle");
     }
   }
 
@@ -906,14 +955,50 @@ function ContactSection() {
         <div className="flex items-center gap-3">
           <span className="h-8 w-1 rounded-full bg-emerald-500/80" />
           <div>
-            <h2 className="text-xl font-semibold text-slate-50 sm:text-2xl">
-                Contact Me
+            <h2 className="flex items-center gap-2 text-xl font-semibold text-slate-50 sm:text-2xl">
+              <MessageSquare size={18} className="text-emerald-300" aria-hidden="true" />
+              Contact Me
             </h2>
             <p className="mt-1 text-xs text-slate-400 sm:text-sm">
               Let&apos;s talk about building something impactful together.
             </p>
           </div>
         </div>
+      </div>
+      <div className="pointer-events-none fixed inset-x-0 top-4 z-50 flex justify-center px-4">
+        <AnimatePresence mode="wait">
+          {apiErrorBannerMessage ? (
+            <motion.div
+              key={apiErrorBannerMessage}
+              initial={{ opacity: 0, y: -12 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.26, ease: "easeOut" }}
+              className="api-error-banner pointer-events-auto w-full max-w-2xl"
+              role="alert"
+              aria-live="assertive"
+            >
+              <div className="api-error-banner__icon-wrap">
+                <CircleX size={22} strokeWidth={2.2} />
+              </div>
+              <div className="api-error-banner__content">
+                <p className="api-error-banner__title">Something went wrong!</p>
+                <p className="api-error-banner__message">{apiErrorBannerMessage}</p>
+              </div>
+              <button
+                type="button"
+                className="api-error-banner__dismiss"
+                onClick={() => {
+                  clearApiErrorTimer();
+                  setApiErrorBannerMessage(null);
+                }}
+                aria-label="Dismiss error message"
+              >
+                <X size={18} />
+              </button>
+            </motion.div>
+          ) : null}
+        </AnimatePresence>
       </div>
       <motion.div
         className="grid gap-6 md:grid-cols-2 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1.2fr)]"
@@ -931,7 +1016,7 @@ function ContactSection() {
               LET&apos;S WORK TOGETHER
             </p>
             <h3 className="mt-2 text-lg font-semibold text-slate-50">
-              Let&apos;s Connect
+              Opportunities & Collaboration
             </h3>
             <div className="mt-3 space-y-2 text-xs text-slate-200">
               <p>
@@ -957,7 +1042,11 @@ function ContactSection() {
                 "Full-time Opportunities",
                 "Collaborations",
                 "Open Source",
-              ].map((item) => (
+              ]
+                .filter((item) =>
+                  isAvailableForWork ? true : item !== "Full-time Opportunities",
+                )
+                .map((item) => (
                 <li
                   key={item}
                   className="flex items-start gap-2 text-xs text-slate-200"
@@ -965,7 +1054,7 @@ function ContactSection() {
                   <span className="mt-1 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-emerald-400 shadow-[0_0_14px_rgba(16,185,129,0.35)]" />
                   <span>{item}</span>
                 </li>
-              ))}
+                ))}
             </ul>
           </div>
 
@@ -1061,7 +1150,7 @@ function ContactSection() {
           variants={cardVariants}
           onSubmit={async (event) => {
             event.preventDefault();
-            setErrorMessage(null);
+            setFormErrorMessage(null);
 
             const form = event.currentTarget;
             const formData = new FormData(form);
@@ -1075,27 +1164,17 @@ function ContactSection() {
             }
             const messageText = String(message);
             if (messageText.trim().length < 10) {
-              setStatus("error");
-              setErrorMessage(
+              showFormError(
                 "Message must be at least 10 characters long so that I have enough context.",
               );
-              setTimeout(() => {
-                setStatus("idle");
-                setErrorMessage(null);
-              }, TOAST_DURATION_MS);
               return;
             }
 
             if (isReferral) {
               if (!resumeFile) {
-                setStatus("error");
-                setErrorMessage(
+                showFormError(
                   "Please upload your resume before requesting a referral.",
                 );
-                setTimeout(() => {
-                  setStatus("idle");
-                  setErrorMessage(null);
-                }, TOAST_DURATION_MS);
                 return;
               }
 
@@ -1123,16 +1202,14 @@ function ContactSection() {
             window.turnstile?.reset?.();
           }}
         >
-          {status === "error" && errorMessage && (
+          {status === "error" && formErrorMessage && (
             <motion.div
-              ref={errorRef}
               initial={{ opacity: 0, y: -8 }}
               animate={{ opacity: 1, y: 0 }}
               className="mb-2 rounded-lg border border-red-500/60 bg-red-900/70 px-3 py-2 text-[11px] text-red-100 shadow-lg"
               role="alert"
-              tabIndex={-1}
             >
-              {errorMessage}
+              {formErrorMessage}
             </motion.div>
           )}
           {showJobIdToast && (

@@ -84,7 +84,7 @@ export async function POST(request: NextRequest) {
         {
           success: false,
           error:
-            "You’re sending messages too quickly. Please wait a few seconds and try again.",
+            "Your message limit is exhausted. Please try again after sometime.",
         },
         {
           status: 429,
