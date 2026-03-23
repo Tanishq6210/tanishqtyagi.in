@@ -714,6 +714,11 @@ declare global {
 
 function ContactSection() {
   const TOAST_DURATION_MS = 5000;
+  const requiredMark = (
+    <span aria-hidden="true" className="ml-1 text-[11px] text-red-400">
+      *
+    </span>
+  );
   const [mode, setMode] = useState<"message" | "referral">("message");
   // Turnstile callback is registered once per `siteKey`. Keep a ref to the latest
   // tab selection so `submitForm()` sends the correct `mode` to the API.
@@ -937,7 +942,7 @@ function ContactSection() {
                 contributions 🚀
               </p>
               <p className="text-[11px] text-slate-400">
-                For fastest response, use the form on the right.
+                For fastest response, use the form in the portfolio.
               </p>
             </div>
           </div>
@@ -1211,7 +1216,7 @@ function ContactSection() {
                 htmlFor="name"
                 className="text-xs font-medium text-slate-300"
               >
-                Name
+                Name{requiredMark}
               </label>
               <input
                 id="name"
@@ -1227,7 +1232,7 @@ function ContactSection() {
                 htmlFor="email"
                 className="text-xs font-medium text-slate-300"
               >
-                Email
+                Email{requiredMark}
               </label>
               <input
                 id="email"
@@ -1260,6 +1265,7 @@ function ContactSection() {
               className="text-xs font-medium text-slate-300"
             >
               {isReferral ? "Job IDs" : "Subject"}
+              {requiredMark}
             </label>
             <input
               id="subject"
@@ -1280,6 +1286,7 @@ function ContactSection() {
               className="text-xs font-medium text-slate-300"
             >
               {isReferral ? "Why are you a good fit for this role?" : "Message"}
+              {requiredMark}
             </label>
               <textarea
                 id="message"

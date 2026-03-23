@@ -19,8 +19,8 @@ const redis = new Redis({
   token: process.env.TT_KV_REST_API_TOKEN!,
 });
 
-const RATE_LIMIT_WINDOW_SECONDS = 10;
-const RATE_LIMIT_MAX_REQUESTS = 5;
+const RATE_LIMIT_WINDOW_SECONDS = 3600;
+const RATE_LIMIT_MAX_REQUESTS = 3;
 const ALLOWED_ORIGINS = process.env.CORS_ALLOWED_ORIGINS ? process.env.CORS_ALLOWED_ORIGINS.split(",").map((origin) => origin.trim()) : [];
 
 const sendEmailSchema = z.object({
