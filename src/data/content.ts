@@ -3,7 +3,8 @@ export const profile = {
   title: "Software Engineer",
   tagline: "Building scalable backend systems & data platforms",
   summary:
-    "Software Engineer building high-performance backend services, distributed data systems, and secure scalable infrastructure.",
+    "Building high-performance backend services, distributed data systems, and secure scalable infrastructure.",
+  availableForWork: false,
   availabilityBadge: "Open to Opportunities",
   location: "Bangalore, India",
   email: "mailoftanishqtyagi@gmail.com",
@@ -41,8 +42,8 @@ Tanishq Tyagi`,
   github: "https://github.com/Tanishq6210",
   linkedin: "https://www.linkedin.com/in/tanishq-tyagi",
   /** Hosted under public/ — used for hero + contact resume download */
-  resumePublicPath: "/Resume_Tanishq_2026.pdf",
-  roles: ["Software Engineer", "Data Engineer", "Full Stack Developer"],
+  resumePublicPath: "/Resume_Tanishq_Tyagi_2026.pdf",
+  roles: ["Data Engineer", "Software Engineer", "Full Stack Developer"],
 };
 
 export const skills = [
@@ -68,6 +69,8 @@ export const skills = [
       { name: "REST APIs", isPrimary: true },
       { name: "Microservices", isPrimary: true },
       { name: "JPA/Hibernate", isPrimary: true },
+      { name: "Mockito", isPrimary: true},
+      { name: "Junit", isPrimary: true},
       { name: "OAuth", isPrimary: false},
       { name: "Authentication (JWT / OAuth)", isPrimary: false},
       { name: "Redis", isPrimary: false},
@@ -118,12 +121,15 @@ export const experiences = [
   period: "Apr 2025 – Present",
   location: "Bangalore, India",
   bullets: [
-    "Improved NER model performance by 30% through optimized training and evaluation pipelines.",
-    "Accelerated large-scale PySpark ETL pipelines by 40% on multi-petabyte datasets.",
-    "Reduced inference latency by 35% using GPU-backed processing.",
-    "Built scalable backend services integrating external systems with secure (SSL/TLS) communication.",
+    "Improved NER model precision, recall, and F1-score by 30% via training pipeline optimization and automated evaluation workflows.",
+    "Reduced large-scale NER inference latency by 35% using GPU-backed processing across 10% of Visa’s enterprise dataset",
+    "Engineered a secure, scalable backend data service processing billions of records via streaming and batch integrations, improving throughput by 50%",
+    "Built scalable backend services integrating external systems with secure (SSL/TLS) communication",
+    "Integrated external Natural Language Query services and improved prompt logic to reduce hallucinations by 50%, resulting in consistently accurate outputs",
+    "Implemented JDBC-based data access via Trino within Spring Boot APIs to retrieve millions of records efficiently, securing query execution using parameterized SQL to prevent injection vulnerabilities.",
+    "Implemented resilient retry mechanisms using Spring Retry to handle transient network failures and ensure reliable data processing without loss"
   ],
-  tags: ["PySpark", "Hadoop", "NER", "ETL", "Distributed Systems"],
+  tags: ["Java", "Spring JDBC", "JPA / Hibernate", "SQL",  "NER", "Distributed Systems", "Jenkins CI/CD"],
 },
   {
   role: "Software Engineer (6 month Intern + Fulltime)",
@@ -132,12 +138,14 @@ export const experiences = [
   location: "Bangalore, India",
   bullets: [
     "Automated XML workflows, reducing manual effort by 90%.",
-    "Developed secure REST APIs (Spring Boot, PostgreSQL) for 2,000+ users with OAuth authentication.",
+    "Developed secure REST APIs (performing CRUD operations) optimised for handling concurrent users at the same time.",
     "Integrated OAuth-based authentication and authorization, increasing system security by 47% and enabling seamless access control",
+    "Implemented scheduled cron jobs to automatically detect and process pending requests, eliminating manual intervention and improving workflow reliability",
     "Worked concurrently on 2 production projects within the same timeline, delivering both successfully while maintaining delivery milestones",
-    "Delivered zero-downtime deployments with 98% system uptime.",
+    "Delivered zero-downtime deployments with 98% system uptime",
+    "Maintained 97% unit test coverage across the codebase, ensuring high reliability and preventing regressions during continuous feature development."
   ],
-  tags: ["Java", "Spring Boot", "PostgreSQL", "AWS S3 Bucket", "OAuth2", "REST APIs", "XML"],
+  tags: ["Java", "Spring Boot", "PostgreSQL", "AWS S3 Bucket", "OAuth2", "REST APIs", "XML", "Cron Jobs", "Swagger API", "Mockito", "Junit", "Docker", "Kubernetes"],
 },
 ];
 

@@ -215,6 +215,7 @@ function Hero() {
   const prefersReducedMotion = useReducedMotion();
   const fullName = profile.name;
   const roles = profile.roles;
+  const isAvailableForWork = profile.availableForWork === true;
 
   const [nameIndex, setNameIndex] = useState(
     prefersReducedMotion ? fullName.length : 0,
@@ -301,9 +302,14 @@ function Hero() {
     >
       <div className="max-w-xl space-y-6">
         <div className="flex items-center gap-3">
-          <span className="badge-soft">{profile.availabilityBadge}</span>
+          <span className="badge-soft">
+            {isAvailableForWork
+              ? profile.availabilityBadge
+              : "Software Engineer @VISA"}
+          </span>
           <span className="text-xs text-slate-400">
-            {profile.location} · Open to roles
+            {profile.location}
+            {isAvailableForWork ? " · Open to roles" : ""}
           </span>
         </div>
         <div className="space-y-3">
@@ -350,7 +356,7 @@ function Hero() {
         <div className="flex flex-wrap items-center gap-4">
           <a
             href={profile.resumePublicPath}
-            download="Resume_Tanishq_2026.pdf"
+            download="Resume_Tanishq_Tyagi"
             className="btn-primary"
           >
             Download Resume
@@ -508,7 +514,7 @@ function ExperienceSection() {
               Experience
             </h2>
             <p className="mt-1 text-xs text-slate-400 sm:text-sm">
-              Roles where I&apos;ve built production systems at scale.
+              Roles where I&apos;ve built production systems at scale
             </p>
           </div>
         </div>
@@ -876,6 +882,7 @@ function ContactSection() {
   }, []);
 
   const isReferral = mode === "referral";
+  const isAvailableForWork = profile.availableForWork === true;
 
   async function submitForm(form: HTMLFormElement, token: string) {
     const formData = new FormData(form);
@@ -1035,7 +1042,11 @@ function ContactSection() {
                 "Full-time Opportunities",
                 "Collaborations",
                 "Open Source",
-              ].map((item) => (
+              ]
+                .filter((item) =>
+                  isAvailableForWork ? true : item !== "Full-time Opportunities",
+                )
+                .map((item) => (
                 <li
                   key={item}
                   className="flex items-start gap-2 text-xs text-slate-200"
@@ -1043,7 +1054,7 @@ function ContactSection() {
                   <span className="mt-1 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-emerald-400 shadow-[0_0_14px_rgba(16,185,129,0.35)]" />
                   <span>{item}</span>
                 </li>
-              ))}
+                ))}
             </ul>
           </div>
 
