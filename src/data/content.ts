@@ -47,16 +47,12 @@ Tanishq Tyagi`,
 
 export const skills = [
   {
-    category: "Languages",
+    category: "Programming Languages",
     items: ["Java", "Python", "SQL", "C++", "Kotlin"],
   },
   {
-    category: "Backend",
+    category: "Backend Engineering",
     items: ["Spring Boot", "REST APIs", "Microservices", "JPA/Hibernate"],
-  },
-  {
-    category: "Data & Big Data",
-    items: ["Apache Spark", "Hadoop", "Hive", "ETL Pipelines"],
   },
   {
     category: "DevOps",
@@ -64,15 +60,15 @@ export const skills = [
   },
   {
     category: "Databases",
-    items: ["PostgreSQL"],
+    items: ["PostgreSQL", "MySQL", "MongoDB"],
   },
   {
     category: "ML/NLP",
-    items: ["NER", "Model Evaluation", "GPU Inference"],
+    items: ["NER (Named Entity Recognition Model)", "Model Evaluation", "GPU Inference"],
   },
   {
-    category: "Core",
-    items: ["DSA", "OOP", "OS"],
+    category: "Computer Science Fundamentals",
+    items: ["Data Structures & Algorigthms", "Object Oriented Programmign", "Operating Systems", "Database Management Systems"],
   },
 ];
 
@@ -125,7 +121,7 @@ export const projects = [
   period: "April 2023",
   description:
     "Decentralized NGO donation platform ensuring transparent, tamper-proof contributions using blockchain.",
-  bullets: [``
+  bullets: [
     "Built smart contract-based donation system enabling direct, trustless transfers to NGOs.",
     "Enabled real-time transaction tracking with full on-chain transparency.",
     "Integrated Push Protocol for instant donation notifications.",
@@ -136,7 +132,7 @@ export const projects = [
   demoUrl: "https://ethglobal.com/showcase/donate4change-jnnje"
 },
 {
-  name: "ClearVote",``
+  name: "ClearVote",
   period: "Feb 2023",
   description:
     "Blockchain-based voting platform ensuring transparency and tamper-proof elections.",
