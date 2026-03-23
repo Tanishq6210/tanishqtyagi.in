@@ -52,12 +52,13 @@ export const skills = [
       { name: "Java", isPrimary: true },
       { name: "C++", isPrimary: true },
       { name: "SQL", isPrimary: true },
-      { name: "React JS", isPrimary: true},
       { name: "Python", isPrimary: false },
       { name: "Kotlin", isPrimary: false },
       { name: "Solidity", isPrimary: false},
+      { name: "React JS", isPrimary: false},
       { name: "Next.js", isPrimary: false},
-      { name: "Tailwind CSS", isPrimary: false}
+      { name: "Tailwind CSS", isPrimary: false},
+      { name: "Ether.js", isPrimary: false}
     ],
   },
   {
@@ -87,6 +88,7 @@ export const skills = [
     items: [
       { name: "postgres", isPrimary: true },
       { name: "mySQL", isPrimary: true },
+      { name: "AWS S3 Bucket", isPrimary: false},
       { name: "MongoDB", isPrimary: false },
     ],
   },
@@ -124,16 +126,18 @@ export const experiences = [
   tags: ["PySpark", "Hadoop", "NER", "ETL", "Distributed Systems"],
 },
   {
-  role: "Software Engineer",
+  role: "Software Engineer (6 month Intern + Fulltime)",
   company: "Societe Generale",
   period: "Feb 2024 – Apr 2025",
   location: "Bangalore, India",
   bullets: [
     "Automated XML workflows, reducing manual effort by 90%.",
-    "Developed secure REST APIs (Spring Boot, PostgreSQL) for 2,000+ users.",
+    "Developed secure REST APIs (Spring Boot, PostgreSQL) for 2,000+ users with OAuth authentication.",
+    "Integrated OAuth-based authentication and authorization, increasing system security by 47% and enabling seamless access control",
+    "Worked concurrently on 2 production projects within the same timeline, delivering both successfully while maintaining delivery milestones",
     "Delivered zero-downtime deployments with 98% system uptime.",
   ],
-  tags: ["Spring Boot", "PostgreSQL", "OAuth2", "REST"],
+  tags: ["Java", "Spring Boot", "PostgreSQL", "AWS S3 Bucket", "OAuth2", "REST APIs", "XML"],
 },
 ];
 
