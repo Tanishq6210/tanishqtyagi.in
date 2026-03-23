@@ -184,17 +184,17 @@ export const projects = [
 },
 {
   name: "Atlas",
-  period: "Dec 2022",
+  period: "Dec 2022 - Dec 2025",
   description:
     "Android app helping students navigate university resources.",
   bullets: [
-    "Reached 1,000+ downloads with curated academic resources.",
+    "Reached 1,000+ downloads.",
     "Implemented MVVM architecture for scalable design.",
     "Integrated 10+ APIs using Retrofit.",
   ],
   tags: ["Kotlin", "Android", "MVVM"],
   codeUrl: "https://github.com/Tanishq6210/Atlas-Kotlin/tree/main/Atlas",
-  demoUrl: "https://github.com/Tanishq6210/Atlas-Kotlin/tree/main/Atlas"
+  // demoUrl: "https://drive.google.com/file/d/1KtB0_rDr4qmJFs5VlXNVZY0bjjTQDh_R/view?usp=sharing"
 },
 ];
 

@@ -863,7 +863,7 @@ function ContactSection() {
       if (response.status === 429) {
         setStatus("error");
         setErrorMessage(
-          "You’re sending messages too quickly. Please wait a few seconds and try again.",
+          "Your quota to send the mails is exhausted, Please try again after sometime.",
         );
         return;
       }
@@ -951,7 +951,7 @@ function ContactSection() {
               LET&apos;S WORK TOGETHER
             </p>
             <h3 className="mt-2 text-lg font-semibold text-slate-50">
-              Let&apos;s Connect
+              Opportunities & Collaboration
             </h3>
             <div className="mt-3 space-y-2 text-xs text-slate-200">
               <p>
