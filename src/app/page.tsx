@@ -1,7 +1,5 @@
 "use client";
 
-import Link from "next/link";
-import Image from "next/image";
 import Script from "next/script";
 import { motion, useReducedMotion } from "framer-motion";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
@@ -22,6 +20,10 @@ const SECTIONS = [
   { id: "skills", label: "Skills" },
   { id: "contact", label: "Contact" },
 ];
+
+function gmailComposeHref(email: string) {
+  return `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(email)}`;
+}
 
 const sectionVariants = {
   hidden: { opacity: 0, y: 24 },
@@ -138,7 +140,7 @@ function Navbar() {
             <button
               type="button"
               onClick={toggleTheme}
-              className="inline-flex items-center gap-1 rounded-full border border-slate-700/80 bg-slate-900/60 px-3 py-1.5 text-xs font-medium text-slate-300 shadow-sm shadow-black/40 transition hover:border-emerald-400 hover:text-emerald-300"
+              className="theme-toggle-btn inline-flex items-center gap-1 rounded-full border border-slate-700/80 bg-slate-900/60 px-3 py-1.5 text-xs font-medium text-slate-300 shadow-sm shadow-black/40 transition hover:border-emerald-400 hover:text-emerald-300"
               aria-label="Toggle color theme"
             >
               <span
@@ -157,7 +159,7 @@ function Navbar() {
             {/* Mobile menu toggle */}
             <button
               type="button"
-              className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-slate-700/80 bg-slate-900/60 text-slate-200 shadow-sm shadow-black/40 transition hover:border-emerald-400 hover:text-emerald-300 md:hidden"
+              className="mobile-menu-btn inline-flex h-9 w-9 items-center justify-center rounded-full border border-slate-700/80 bg-slate-900/60 text-slate-200 shadow-sm shadow-black/40 transition hover:border-emerald-400 hover:text-emerald-300 md:hidden"
               aria-label="Toggle navigation menu"
               onClick={() => setIsMobileNavOpen((open) => !open)}
             >
@@ -336,42 +338,47 @@ function Hero() {
         )}
         <div className="flex flex-wrap items-center gap-4">
           <a
-            href={profile.resumeUrl}
-            target="_blank"
-            rel="noopener noreferrer"
+            href={profile.resumePublicPath}
+            download="Resume_Tanishq_2026.pdf"
             className="btn-primary"
           >
-            View Resume
+            Download Resume
           </a>
           <a href="#projects" className="btn-secondary">
-            View My Work
+            Explore Projects
           </a>
         </div>
-        <div className="flex flex-wrap items-center gap-4 pt-2 text-xs text-slate-400">
-          <a
-            href={profile.github}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hover:text-emerald-400"
-          >
-            GitHub
-          </a>
-          <span className="h-1 w-1 rounded-full bg-slate-600" />
-          <a
-            href={profile.linkedin}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hover:text-emerald-400"
-          >
-            LinkedIn
-          </a>
-          <span className="h-1 w-1 rounded-full bg-slate-600" />
-          <a
-            href={`mailto:${profile.email}`}
-            className="hover:text-emerald-400"
-          >
-            {profile.email}
-          </a>
+        <div className="hero-quick-connect">
+          {/* <span className="hero-quick-connect__label">Connect quickly:</span> */}
+          <div className="hero-quick-connect__links">
+            <a
+              href={profile.linkedin}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              LinkedIn
+            </a>
+            <span className="hero-quick-connect__sep" aria-hidden>
+              •
+            </span>
+            <a
+              href={profile.github}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              GitHub
+            </a>
+            <span className="hero-quick-connect__sep" aria-hidden>
+              •
+            </span>
+            <a
+              href={gmailComposeHref(profile.email)}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Email
+            </a>
+          </div>
         </div>
       </div>
 
@@ -716,7 +723,6 @@ function ContactSection() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [resumeFile, setResumeFile] = useState<File | null>(null);
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
-  const [isEmailCopied, setIsEmailCopied] = useState(false);
   const errorRef = useRef<HTMLDivElement | null>(null);
   const formRef = useRef<HTMLFormElement | null>(null);
   const pendingSubmissionRef = useRef(false);
@@ -814,59 +820,6 @@ function ContactSection() {
   }, [status]);
 
   const isReferral = mode === "referral";
-
-  async function copyEmailToClipboard() {
-    const email = profile.email;
-    try {
-      if (navigator?.clipboard?.writeText) {
-        await navigator.clipboard.writeText(email);
-      } else {
-        throw new Error("Clipboard API not available");
-      }
-
-      setIsEmailCopied(true);
-      showNotification({
-        message: "Email copied",
-        description: "Paste it anywhere you like.",
-        type: "success",
-        durationMs: 3000,
-      });
-
-      window.setTimeout(() => setIsEmailCopied(false), 1600);
-    } catch {
-      try {
-        // Fallback for older browsers / restricted environments.
-        const textarea = document.createElement("textarea");
-        textarea.value = email;
-        textarea.setAttribute("readonly", "true");
-        textarea.style.position = "fixed";
-        textarea.style.top = "-1000px";
-        textarea.style.left = "-1000px";
-        document.body.appendChild(textarea);
-        textarea.select();
-
-        const ok = document.execCommand("copy");
-        document.body.removeChild(textarea);
-        if (!ok) throw new Error("Copy command failed");
-
-        setIsEmailCopied(true);
-        showNotification({
-          message: "Email copied",
-          description: "Paste it anywhere you like.",
-          type: "success",
-          durationMs: 3000,
-        });
-        window.setTimeout(() => setIsEmailCopied(false), 1600);
-      } catch {
-        showNotification({
-          message: "Copy failed",
-          description: "Please copy the email address manually.",
-          type: "error",
-          durationMs: 4000,
-        });
-      }
-    }
-  }
 
   async function submitForm(form: HTMLFormElement, token: string) {
     const formData = new FormData(form);
@@ -970,22 +923,18 @@ function ContactSection() {
         >
           <div>
             <p className="text-[11px] font-semibold uppercase tracking-widest text-slate-400">
-              Trust & Info Panel
+              LET&apos;S WORK TOGETHER
             </p>
             <h3 className="mt-2 text-lg font-semibold text-slate-50">
-              Let's Connect
+              Let&apos;s Connect
             </h3>
             <div className="mt-3 space-y-2 text-xs text-slate-200">
-              <div className="flex items-center gap-2">
-                <span className="h-2.5 w-2.5 rounded-full bg-emerald-400 shadow-[0_0_18px_rgba(16,185,129,0.65)]" />
-                <span>Available for opportunities</span>
-              </div>
               <p>
-                Usually replies within{" "}
-                <span className="text-emerald-300">12–24 hours</span>
+                Prefer backend engineering roles and distributed systems work
               </p>
               <p className="text-slate-300">
-                Happy to discuss projects, roles, or ideas 🚀
+                Happy to collaborate on impactful projects and open-source
+                contributions 🚀
               </p>
               <p className="text-[11px] text-slate-400">
                 For fastest response, use the form on the right.
@@ -1017,17 +966,18 @@ function ContactSection() {
 
           <div>
             <h4 className="text-[11px] font-semibold text-slate-300">
-              Social proof
+              Impact Snapshot
             </h4>
-            <div className="mt-2 grid gap-2 sm:grid-cols-2">
+            <div className="mt-2 grid grid-cols-1 gap-2 sm:grid-cols-2">
               {[
-                "10+ Projects Built",
                 "1K+ Users Impacted",
-                "Hackathon Winner",
+                "3× Engineering Awards & Bounties",
+                "Production Backend Experience",
+                "10+ Projects Built",
               ].map((stat) => (
                 <div
                   key={stat}
-                  className="rounded-xl border border-slate-800/60 bg-slate-950/60 px-3 py-2 text-[11px] text-slate-100 shadow-[0_0_30px_rgba(16,185,129,0.06)]"
+                  className="impact-badge-card rounded-xl border border-slate-800/60 bg-slate-950/60 px-3 py-2 text-[11px] text-slate-100 shadow-[0_0_30px_rgba(16,185,129,0.06)]"
                 >
                   {stat}
                 </div>
@@ -1035,54 +985,68 @@ function ContactSection() {
             </div>
           </div>
 
-          <div>
-            <div className="flex flex-wrap gap-2 pt-2">
-              <motion.button
-                type="button"
-                whileTap={{ scale: 0.98 }}
-                animate={
-                  isEmailCopied
-                    ? { scale: 1.01, boxShadow: "0 0 40px rgba(16,185,129,0.25)" }
-                    : undefined
-                }
-                transition={{ duration: 0.18 }}
-                onClick={() => {
-                  void copyEmailToClipboard();
-                }}
-                className={`btn-secondary ${
-                  isEmailCopied
-                    ? "border-emerald-500/70 bg-emerald-500/10 text-emerald-200 hover:text-emerald-100"
-                    : ""
-                }`}
-              >
-                <span className="inline-flex items-center gap-2">
-                  <span className="text-base leading-none">
-                    {isEmailCopied ? "✓" : "⎘"}
-                  </span>
-                  <span>{isEmailCopied ? "Email Copied" : "Copy Email"}</span>
-                </span>
-              </motion.button>
+          <div className="contact-social-row pt-2">
+            <a
+              href={gmailComposeHref(profile.email)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="contact-social-btn"
+              aria-label="Send email in Gmail"
+              title="Email"
+            >
+              <img
+                src="/gmail-icon.png"
+                alt=""
+                width={24}
+                height={24}
+                decoding="async"
+                className="h-6 w-6 shrink-0 object-contain opacity-90"
+              />
+            </a>
 
-              <a
-                href={`https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(
-                  profile.email,
-                )}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="btn-secondary"
-              >
-                Open Gmail
-              </a>
+            <a
+              href={profile.linkedin}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="contact-social-btn"
+              aria-label="LinkedIn profile"
+              title="LinkedIn"
+            >
+              <img
+                src="/linkedin-app-icon.png"
+                alt=""
+                width={24}
+                height={24}
+                decoding="async"
+                className="h-6 w-6 shrink-0 object-contain opacity-90"
+              />
+            </a>
 
-              <a
-                href={profile.linkedin}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="btn-secondary"
-              >
-                LinkedIn
-              </a>
-            </div>
+            <a
+              href={profile.github}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="contact-social-btn"
+              aria-label="GitHub profile"
+              title="GitHub"
+            >
+              <img
+                src="/github-white-icon.png"
+                alt=""
+                width={24}
+                height={24}
+                decoding="async"
+                className="github-contact-icon--dark-theme h-6 w-6 shrink-0 object-contain opacity-90"
+              />
+              <img
+                src="/github-icon.png"
+                alt=""
+                width={24}
+                height={24}
+                decoding="async"
+                className="github-contact-icon--light-theme h-6 w-6 shrink-0 object-contain opacity-90"
+              />
+            </a>
           </div>
         </motion.div>
 

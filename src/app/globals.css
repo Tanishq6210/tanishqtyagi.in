@@ -136,6 +136,164 @@ html[data-theme="light"] .btn-secondary {
   @apply border-slate-200 bg-white text-slate-800 shadow-slate-200/80 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-emerald-300/40 hover:border-emerald-400 hover:text-emerald-700;
 }
 
+/* Hero: minimal inline quick links (no boxes) */
+.hero-quick-connect {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem 0.65rem;
+  padding-top: 0.25rem;
+}
+
+.hero-quick-connect__label {
+  width: 100%;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgb(148 163 184);
+}
+
+html[data-theme="light"] .hero-quick-connect__label {
+  color: rgb(100 116 139);
+}
+
+.hero-quick-connect__links {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem 0.65rem;
+}
+
+.hero-quick-connect__links a {
+  font-size: 0.75rem;
+  line-height: 1.25;
+  color: rgb(148 163 184);
+  text-decoration: none;
+  transition:
+    color 0.2s ease,
+    text-decoration-color 0.2s ease,
+    text-shadow 0.2s ease;
+}
+
+html[data-theme="light"] .hero-quick-connect__links a {
+  color: rgb(71 85 105);
+}
+
+.hero-quick-connect__links a:hover {
+  color: rgb(110 231 183);
+  text-decoration: underline;
+  text-decoration-color: rgba(16, 185, 129, 0.55);
+  text-underline-offset: 3px;
+  text-shadow: 0 0 14px rgba(16, 185, 129, 0.35);
+}
+
+html[data-theme="light"] .hero-quick-connect__links a:hover {
+  color: rgb(5 150 105);
+  text-shadow: 0 0 12px rgba(16, 185, 129, 0.25);
+}
+
+.hero-quick-connect__sep {
+  font-size: 0.65rem;
+  color: rgb(71 85 105);
+  user-select: none;
+}
+
+html[data-theme="light"] .hero-quick-connect__sep {
+  color: rgb(148 163 184);
+}
+
+/* Contact panel: social / contact icon row */
+.contact-social-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px;
+}
+
+.contact-social-btn {
+  box-sizing: border-box;
+  display: inline-flex;
+  width: 48px;
+  height: 48px;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: transparent;
+  transition: all 0.2s ease;
+  color: inherit;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.contact-social-btn:hover {
+  transform: translateY(-4px);
+  border-color: rgba(0, 255, 180, 0.4);
+  background: rgba(0, 255, 180, 0.08);
+  box-shadow: 0px 8px 24px rgba(0, 255, 180, 0.15);
+}
+
+.contact-social-btn:focus-visible {
+  outline: none;
+  box-shadow:
+    0 0 0 2px rgba(15, 23, 42, 0.95),
+    0 0 0 4px rgba(16, 185, 129, 0.45);
+}
+
+html[data-theme="light"] .contact-social-btn {
+  border-color: rgba(15, 23, 42, 0.1);
+}
+
+html[data-theme="light"] .contact-social-btn:focus-visible {
+  box-shadow:
+    0 0 0 2px #fff,
+    0 0 0 4px rgba(16, 185, 129, 0.45);
+}
+
+/* Impact Snapshot badges: lighter white surface in light theme only */
+html[data-theme="light"] .impact-badge-card {
+  background: #ffffff;
+  border-color: rgba(15, 23, 42, 0.12);
+  color: rgb(30 41 59);
+  box-shadow:
+    0 1px 2px rgba(15, 23, 42, 0.06),
+    0 0 24px rgba(16, 185, 129, 0.06);
+}
+
+/* Light mode only: match theme toggle surface to Impact Snapshot tiles */
+html[data-theme="light"] .theme-toggle-btn {
+  background: #ffffff;
+  border-color: rgba(15, 23, 42, 0.12);
+  box-shadow:
+    0 1px 2px rgba(15, 23, 42, 0.06),
+    0 0 24px rgba(16, 185, 129, 0.06);
+}
+
+html[data-theme="light"] .mobile-menu-btn {
+  background: #ffffff;
+  border-color: rgba(15, 23, 42, 0.12);
+  box-shadow:
+    0 1px 2px rgba(15, 23, 42, 0.06),
+    0 0 24px rgba(16, 185, 129, 0.06);
+}
+
+/* Contact GitHub: white mark on dark theme, standard asset on light */
+.github-contact-icon--light-theme {
+  display: none;
+}
+.github-contact-icon--dark-theme {
+  display: block;
+}
+html[data-theme="light"] .github-contact-icon--light-theme {
+  display: block;
+}
+html[data-theme="light"] .github-contact-icon--dark-theme {
+  display: none;
+}
+
 html[data-theme="light"] header {
   @apply bg-white/90 border-slate-200;
 }

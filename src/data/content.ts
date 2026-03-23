@@ -3,7 +3,7 @@ export const profile = {
   title: "Software Engineer",
   tagline: "Building scalable backend systems & data platforms",
   summary:
-    "Software Engineer focused on high-performance backend services, distributed data systems, and applied ML. Passionate about building reliable, secure, and scalable infrastructure.",
+    "Software Engineer building high-performance backend services, distributed data systems, and secure scalable infrastructure.",
   availabilityBadge: "Open to Opportunities",
   location: "Bangalore, India",
   email: "mailoftanishqtyagi@gmail.com",
@@ -41,8 +41,8 @@ Tanishq Tyagi`,
   phone: "9837885503",
   github: "https://github.com/git-tanishq-tyagi",
   linkedin: "https://www.linkedin.com/in/tanishq-tyagi",
-  resumeUrl:
-    "https://drive.google.com/file/d/1AtY1f-T3xbDK0oZlFNhrSE-Bck7ukF4e/view?usp=sharing",
+  /** Hosted under public/ — used for hero + contact resume download */
+  resumePublicPath: "/Resume_Tanishq_2026.pdf",
   roles: ["Software Engineer", "Data Engineer", "Full Stack Developer"],
 };
 
