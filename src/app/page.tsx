@@ -1,7 +1,5 @@
 "use client";
 
-import Link from "next/link";
-import Image from "next/image";
 import Script from "next/script";
 import { motion, useReducedMotion } from "framer-motion";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
@@ -22,6 +20,10 @@ const SECTIONS = [
   { id: "skills", label: "Skills" },
   { id: "contact", label: "Contact" },
 ];
+
+function gmailComposeHref(email: string) {
+  return `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(email)}`;
+}
 
 const sectionVariants = {
   hidden: { opacity: 0, y: 24 },
@@ -138,7 +140,7 @@ function Navbar() {
             <button
               type="button"
               onClick={toggleTheme}
-              className="inline-flex items-center gap-1 rounded-full border border-slate-700/80 bg-slate-900/60 px-3 py-1.5 text-xs font-medium text-slate-300 shadow-sm shadow-black/40 transition hover:border-emerald-400 hover:text-emerald-300"
+              className="theme-toggle-btn inline-flex items-center gap-1 rounded-full border border-slate-700/80 bg-slate-900/60 px-3 py-1.5 text-xs font-medium text-slate-300 shadow-sm shadow-black/40 transition hover:border-emerald-400 hover:text-emerald-300"
               aria-label="Toggle color theme"
             >
               <span
@@ -157,7 +159,7 @@ function Navbar() {
             {/* Mobile menu toggle */}
             <button
               type="button"
-              className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-slate-700/80 bg-slate-900/60 text-slate-200 shadow-sm shadow-black/40 transition hover:border-emerald-400 hover:text-emerald-300 md:hidden"
+              className="mobile-menu-btn inline-flex h-9 w-9 items-center justify-center rounded-full border border-slate-700/80 bg-slate-900/60 text-slate-200 shadow-sm shadow-black/40 transition hover:border-emerald-400 hover:text-emerald-300 md:hidden"
               aria-label="Toggle navigation menu"
               onClick={() => setIsMobileNavOpen((open) => !open)}
             >
@@ -336,42 +338,47 @@ function Hero() {
         )}
         <div className="flex flex-wrap items-center gap-4">
           <a
-            href={profile.resumeUrl}
-            target="_blank"
-            rel="noopener noreferrer"
+            href={profile.resumePublicPath}
+            download="Resume_Tanishq_2026.pdf"
             className="btn-primary"
           >
-            View Resume
+            Download Resume
           </a>
           <a href="#projects" className="btn-secondary">
-            View My Work
+            Explore Projects
           </a>
         </div>
-        <div className="flex flex-wrap items-center gap-4 pt-2 text-xs text-slate-400">
-          <a
-            href={profile.github}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hover:text-emerald-400"
-          >
-            GitHub
-          </a>
-          <span className="h-1 w-1 rounded-full bg-slate-600" />
-          <a
-            href={profile.linkedin}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hover:text-emerald-400"
-          >
-            LinkedIn
-          </a>
-          <span className="h-1 w-1 rounded-full bg-slate-600" />
-          <a
-            href={`mailto:${profile.email}`}
-            className="hover:text-emerald-400"
-          >
-            {profile.email}
-          </a>
+        <div className="hero-quick-connect">
+          {/* <span className="hero-quick-connect__label">Connect quickly:</span> */}
+          <div className="hero-quick-connect__links">
+            <a
+              href={profile.linkedin}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              LinkedIn
+            </a>
+            <span className="hero-quick-connect__sep" aria-hidden>
+              •
+            </span>
+            <a
+              href={profile.github}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              GitHub
+            </a>
+            <span className="hero-quick-connect__sep" aria-hidden>
+              •
+            </span>
+            <a
+              href={gmailComposeHref(profile.email)}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Email
+            </a>
+          </div>
         </div>
       </div>
 
@@ -904,37 +911,142 @@ function ContactSection() {
         </div>
       </div>
       <motion.div
-        className="grid gap-6 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1.2fr)]"
+        className="grid gap-6 md:grid-cols-2 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1.2fr)]"
         initial="hidden"
         whileInView="visible"
         viewport={{ amount: 0.2 }}
         transition={{ staggerChildren: 0.12 }}
       >
-        <motion.div className="card space-y-4" variants={cardVariants}>
+        <motion.div
+          className="card space-y-4 opacity-90 bg-slate-900/45 shadow-black/20 backdrop-blur-xl hover:opacity-100 hover:-translate-y-0.5 hover:border-emerald-500/55 hover:bg-slate-900/75 hover:shadow-emerald-500/12"
+          variants={cardVariants}
+        >
           <div>
-            <h3 className="text-sm font-semibold text-slate-100">
-              Contact Details
-            </h3>
-            <p className="mt-1 text-xs text-slate-400">
-              I typically respond within a day.
+            <p className="text-[11px] font-semibold uppercase tracking-widest text-slate-400">
+              LET&apos;S WORK TOGETHER
             </p>
-          </div>
-          <div className="space-y-3 text-xs text-slate-200">
-            <div className="rounded-xl border border-slate-800/60 bg-slate-950/80 p-3">
-              <p className="text-[11px] text-slate-400">Email</p>
-              <a
-                href={`mailto:${profile.email}`}
-                className="mt-0.5 block text-sm text-emerald-300 hover:text-emerald-200"
-              >
-                {profile.email}
-              </a>
-            </div>
-            <div className="rounded-xl border border-slate-800/60 bg-slate-950/80 p-3">
-              <p className="text-[11px] text-slate-400">Location</p>
-              <p className="mt-0.5 text-sm text-slate-200">
-                {profile.location}
+            <h3 className="mt-2 text-lg font-semibold text-slate-50">
+              Let&apos;s Connect
+            </h3>
+            <div className="mt-3 space-y-2 text-xs text-slate-200">
+              <p>
+                Prefer backend engineering roles and distributed systems work
+              </p>
+              <p className="text-slate-300">
+                Happy to collaborate on impactful projects and open-source
+                contributions 🚀
+              </p>
+              <p className="text-[11px] text-slate-400">
+                For fastest response, use the form on the right.
               </p>
             </div>
+          </div>
+
+          <div>
+            <h4 className="text-[11px] font-semibold text-slate-300">
+              What you can reach out for:
+            </h4>
+            <ul className="mt-2 space-y-2">
+              {[
+                "Freelance Projects",
+                "Full-time Opportunities",
+                "Collaborations",
+                "Open Source",
+              ].map((item) => (
+                <li
+                  key={item}
+                  className="flex items-start gap-2 text-xs text-slate-200"
+                >
+                  <span className="mt-1 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-emerald-400 shadow-[0_0_14px_rgba(16,185,129,0.35)]" />
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div>
+            <h4 className="text-[11px] font-semibold text-slate-300">
+              Impact Snapshot
+            </h4>
+            <div className="mt-2 grid grid-cols-1 gap-2 sm:grid-cols-2">
+              {[
+                "1K+ Users Impacted",
+                "3× Engineering Awards & Bounties",
+                "Production Backend Experience",
+                "10+ Projects Built",
+              ].map((stat) => (
+                <div
+                  key={stat}
+                  className="impact-badge-card rounded-xl border border-slate-800/60 bg-slate-950/60 px-3 py-2 text-[11px] text-slate-100 shadow-[0_0_30px_rgba(16,185,129,0.06)]"
+                >
+                  {stat}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="contact-social-row pt-2">
+            <a
+              href={gmailComposeHref(profile.email)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="contact-social-btn"
+              aria-label="Send email in Gmail"
+              title="Email"
+            >
+              <img
+                src="/gmail-icon.png"
+                alt=""
+                width={24}
+                height={24}
+                decoding="async"
+                className="h-6 w-6 shrink-0 object-contain opacity-90"
+              />
+            </a>
+
+            <a
+              href={profile.linkedin}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="contact-social-btn"
+              aria-label="LinkedIn profile"
+              title="LinkedIn"
+            >
+              <img
+                src="/linkedin-app-icon.png"
+                alt=""
+                width={24}
+                height={24}
+                decoding="async"
+                className="h-6 w-6 shrink-0 object-contain opacity-90"
+              />
+            </a>
+
+            <a
+              href={profile.github}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="contact-social-btn"
+              aria-label="GitHub profile"
+              title="GitHub"
+            >
+              <img
+                src="/github-white-icon.png"
+                alt=""
+                width={24}
+                height={24}
+                decoding="async"
+                className="github-contact-icon--dark-theme h-6 w-6 shrink-0 object-contain opacity-90"
+              />
+              <img
+                src="/github-icon.png"
+                alt=""
+                width={24}
+                height={24}
+                decoding="async"
+                className="github-contact-icon--light-theme h-6 w-6 shrink-0 object-contain opacity-90"
+              />
+            </a>
           </div>
         </motion.div>
 
