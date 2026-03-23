@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { NotificationProvider } from "@/components/notification/NotificationProvider";
+import { BackToTopButton } from "@/components/BackToTopButton";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -37,7 +38,10 @@ export default function RootLayout({
         suppressHydrationWarning
         className={`${inter.variable} antialiased bg-slate-950 text-slate-100`}
       >
-        <NotificationProvider>{children}</NotificationProvider>
+        <NotificationProvider>
+          {children}
+          <BackToTopButton />
+        </NotificationProvider>
       </body>
     </html>
   );
