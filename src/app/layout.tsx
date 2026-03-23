@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { NotificationProvider } from "@/components/notification/NotificationProvider";
+import { BackToTopButton } from "@/components/BackToTopButton";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -10,11 +11,11 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Tanishq Tyagi | Software Engineer & Data Engineer",
+  title: "Tanishq Tyagi | Software Engineer",
   description:
-    "Portfolio of Tanishq Tyagi – Software Engineer & Data Engineer specializing in scalable backend systems, big data pipelines, and applied ML/NLP.",
+    "Portfolio of Tanishq Tyagi – Software Engineer",
   openGraph: {
-    title: "Tanishq Tyagi | Software Engineer & Data Engineer",
+    title: "Tanishq Tyagi | Software Engineer",
     description:
       "Explore projects, experience, and skills in backend engineering, big data, and ML/NLP.",
     url: "https://tanishqtyagi.in",
@@ -37,7 +38,10 @@ export default function RootLayout({
         suppressHydrationWarning
         className={`${inter.variable} antialiased bg-slate-950 text-slate-100`}
       >
-        <NotificationProvider>{children}</NotificationProvider>
+        <NotificationProvider>
+          {children}
+          <BackToTopButton />
+        </NotificationProvider>
       </body>
     </html>
   );

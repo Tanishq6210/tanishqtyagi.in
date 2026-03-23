@@ -64,7 +64,7 @@ main {
 }
 
 .section-container {
-  @apply mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8;
+  @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
 }
 
 .card {
@@ -326,6 +326,15 @@ html[data-theme="light"] .mobile-menu-btn {
   box-shadow:
     0 1px 2px rgba(15, 23, 42, 0.06),
     0 0 24px rgba(16, 185, 129, 0.06);
+}
+
+html[data-theme="light"] .back-to-top-btn {
+  background: #ffffff;
+  border-color: rgba(15, 23, 42, 0.14);
+  color: rgb(5 150 105);
+  box-shadow:
+    0 1px 2px rgba(15, 23, 42, 0.06),
+    0 0 24px rgba(16, 185, 129, 0.1);
 }
 
 /* Contact GitHub: white mark on dark theme, standard asset on light */
