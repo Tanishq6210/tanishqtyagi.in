@@ -35,7 +35,35 @@ const DAILY_MAIL_QUOTA = process.env.DAILY_MAIL_QUOTA
 const DAILY_QUOTA_ERROR_MESSAGE =
   "Today's mail quota is exhausted please try again tomorrow.";
 const MAIL_DISABLED_ERROR_MESSAGE = "Mail service temporarily disabled";
+const MAIL_LATENCY_LOGS_ENABLED = process.env.MAIL_LATENCY_LOGS === "true";
 const ALLOWED_ORIGINS = process.env.CORS_ALLOWED_ORIGINS ? process.env.CORS_ALLOWED_ORIGINS.split(",").map((origin) => origin.trim()) : [];
+
+const REDIS_PRECHECK_SCRIPT = `
+local ipKey = KEYS[1]
+local dailyKey = KEYS[2]
+local ipWindowSeconds = tonumber(ARGV[1])
+
+local ipCount = redis.call("INCR", ipKey)
+if ipCount == 1 then
+  redis.call("EXPIRE", ipKey, ipWindowSeconds)
+end
+
+local dailyCount = tonumber(redis.call("GET", dailyKey) or "0")
+
+return {ipCount, dailyCount}
+`;
+
+const REDIS_POSTSEND_SCRIPT = `
+local dailyKey = KEYS[1]
+local ttlSeconds = tonumber(ARGV[1])
+
+local dailyCount = redis.call("INCR", dailyKey)
+if dailyCount == 1 then
+  redis.call("EXPIRE", dailyKey, ttlSeconds)
+end
+
+return dailyCount
+`;
 
 const getTodayQuotaKey = () => {
   const dateKey = new Date().toISOString().slice(0, 10);
@@ -64,6 +92,32 @@ const parseCounterValue = (value: unknown): number => {
     return Number.isNaN(parsed) ? 0 : parsed;
   }
   return 0;
+};
+
+const elapsedMs = (start: number) => Number((performance.now() - start).toFixed(1));
+
+const logLatency = (requestId: string, stage: string, durationMs: number) => {
+  if (!MAIL_LATENCY_LOGS_ENABLED) return;
+  console.info(`[send-email][${requestId}] ${stage}=${durationMs}ms`);
+};
+
+const runRedisPrecheck = async (
+  ipKey: string,
+  dailyKey: string,
+) => {
+  const raw = await redis.eval(REDIS_PRECHECK_SCRIPT, [ipKey, dailyKey], [
+    String(RATE_LIMIT_WINDOW_SECONDS),
+  ]);
+
+  const values = Array.isArray(raw) ? raw : [];
+  const ipCount = parseCounterValue(values[0]);
+  const dailyCount = parseCounterValue(values[1]);
+
+  return { ipCount, dailyCount };
+};
+
+const runRedisPostsendUpdate = async (dailyKey: string, ttlSeconds: number) => {
+  await redis.eval(REDIS_POSTSEND_SCRIPT, [dailyKey], [String(ttlSeconds)]);
 };
 
 const sendEmailSchema = z.object({
@@ -95,6 +149,8 @@ export async function OPTIONS() {
 }
 
 export async function POST(request: NextRequest) {
+  const requestStart = performance.now();
+  const requestId = crypto.randomUUID().slice(0, 8);
   const isMailEnabled = process.env.NEXT_PUBLIC_MAIL_ENABLED !== "false";
 
   if (!isMailEnabled) {
@@ -128,16 +184,15 @@ export async function POST(request: NextRequest) {
   const realIp = request.headers.get("x-real-ip");
   const ip =
     forwardedFor?.split(",")[0].trim() ?? realIp ?? "unknown";
+  const dailyQuotaKey = getTodayQuotaKey();
 
   try {
-    const key = `email-ip:${ip}`;
-    const current = (await redis.incr(key)) ?? 0;
+    const redisPreStart = performance.now();
+    const ipKey = `email-ip:${ip}`;
+    const { ipCount, dailyCount } = await runRedisPrecheck(ipKey, dailyQuotaKey);
+    logLatency(requestId, "redisPre", elapsedMs(redisPreStart));
 
-    if (current === 1) {
-      await redis.expire(key, RATE_LIMIT_WINDOW_SECONDS);
-    }
-
-    if (current > RATE_LIMIT_MAX_REQUESTS) {
+    if (ipCount > RATE_LIMIT_MAX_REQUESTS) {
       return NextResponse.json(
         {
           success: false,
@@ -150,17 +205,8 @@ export async function POST(request: NextRequest) {
         },
       );
     }
-  } catch (error) {
-    console.error("Rate limiting failed; continuing without limit:", error);
-  }
 
-  const dailyQuotaKey = getTodayQuotaKey();
-
-  try {
-    const sentTodayRaw = await redis.get(dailyQuotaKey);
-    const sentToday = parseCounterValue(sentTodayRaw);
-
-    if (sentToday >= DAILY_MAIL_QUOTA) {
+    if (dailyCount >= DAILY_MAIL_QUOTA) {
       return NextResponse.json(
         {
           success: false,
@@ -173,7 +219,7 @@ export async function POST(request: NextRequest) {
       );
     }
   } catch (error) {
-    console.error("Daily mail quota check failed; continuing without quota:", error);
+    console.error("Redis precheck failed; continuing without limit:", error);
   }
 
   const turnstileSecretKey = process.env.CLOUDFLARE_TURNSTILE_SECRET_KEY;
@@ -209,7 +255,9 @@ export async function POST(request: NextRequest) {
   }
 
   try {
+    const formDataStart = performance.now();
     const formData = await request.formData();
+    logLatency(requestId, "formDataParse", elapsedMs(formDataStart));
 
     const company = String(formData.get("company") || "").trim();
 
@@ -242,6 +290,7 @@ export async function POST(request: NextRequest) {
     }
 
     try {
+      const turnstileVerifyStart = performance.now();
       const verifyResponse = await fetch(
         "https://challenges.cloudflare.com/turnstile/v0/siteverify",
         {
@@ -260,6 +309,7 @@ export async function POST(request: NextRequest) {
         success: boolean;
         "error-codes"?: string[];
       };
+      logLatency(requestId, "turnstileVerify", elapsedMs(turnstileVerifyStart));
 
       if (!verifyData.success) {
         console.error(
@@ -407,6 +457,7 @@ export async function POST(request: NextRequest) {
       | undefined;
 
     if (resume instanceof File && resume.size > 0) {
+      const attachmentEncodeStart = performance.now();
       const allowedAttachmentTypes = new Set([
         "application/pdf",
         "application/msword",
@@ -435,6 +486,7 @@ export async function POST(request: NextRequest) {
           contentType: resume.type || "application/pdf",
         },
       ];
+      logLatency(requestId, "attachmentEncode", elapsedMs(attachmentEncodeStart));
     }
 
     const displayName = safeName || "there";
@@ -455,6 +507,7 @@ export async function POST(request: NextRequest) {
             .replace("{Name}", displayName)
             .replace("{UserMessage}", safeMessage);
 
+    const resendSendStart = performance.now();
     const { error } = await resend.emails.send({
       from: fromAddress,
       to: targetEmail,
@@ -464,6 +517,7 @@ export async function POST(request: NextRequest) {
       text: textBody,
       attachments,
     });
+    logLatency(requestId, "resendSend", elapsedMs(resendSendStart));
 
     if (error) {
       console.error("Resend error:", error);
@@ -479,13 +533,14 @@ export async function POST(request: NextRequest) {
     }
 
     try {
-      const updatedCount = await redis.incr(dailyQuotaKey);
-      if (updatedCount === 1) {
-        await redis.expire(dailyQuotaKey, getSecondsUntilNextUtcDay());
-      }
+      const redisPostStart = performance.now();
+      await runRedisPostsendUpdate(dailyQuotaKey, getSecondsUntilNextUtcDay());
+      logLatency(requestId, "redisPost", elapsedMs(redisPostStart));
     } catch (error) {
       console.error("Failed to update daily mail quota counter:", error);
     }
+
+    logLatency(requestId, "total", elapsedMs(requestStart));
 
     return NextResponse.json({ success: true },{headers: corsHeaders});
   } catch (error) {
