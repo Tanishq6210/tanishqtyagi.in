@@ -764,7 +764,7 @@ function ContactSection() {
   // tab selection so `submitForm()` sends the correct `mode` to the API.
   const modeRef = useRef<"message" | "referral">("message");
   const [showJobIdToast, setShowJobIdToast] = useState(false);
-  const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
+  const [status, setStatus] = useState<"idle" | "validating" | "submitting" | "success" | "error">("idle");
   const [formErrorMessage, setFormErrorMessage] = useState<string | null>(null);
   const [apiErrorBannerMessage, setApiErrorBannerMessage] = useState<string | null>(null);
   const [resumeFile, setResumeFile] = useState<File | null>(null);
@@ -777,7 +777,7 @@ function ContactSection() {
 
   const siteKey = process.env.NEXT_PUBLIC_CLOUDFLARE_TURNSTILE_SITE_KEY;
   const isMailEnabled = process.env.NEXT_PUBLIC_MAIL_ENABLED !== "false";
-  const isSubmitDisabled = status === "submitting" || !siteKey || !isMailEnabled;
+  const isSubmitDisabled = status === "validating" || status === "submitting" || !siteKey || !isMailEnabled;
 
   useEffect(() => {
     if (!siteKey) {
@@ -1220,9 +1220,9 @@ function ContactSection() {
               }
             }
 
-            // Always request a fresh Turnstile token for each submission
+            // Always request a fresh Turnstile token for each submission.
             pendingSubmissionRef.current = true;
-            setStatus("submitting");
+            setStatus("validating");
             setTurnstileToken(null);
             window.turnstile?.reset?.();
           }}
@@ -1439,7 +1439,9 @@ function ContactSection() {
                     : undefined
                 }
               >
-                {status === "submitting"
+                {status === "validating"
+                  ? "Validating..."
+                  : status === "submitting"
                   ? (
                     <span className="sending-dots" aria-live="polite">
                       <span className="sr-only">Sending</span>
