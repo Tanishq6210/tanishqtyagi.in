@@ -407,11 +407,17 @@ export async function POST(request: NextRequest) {
       | undefined;
 
     if (resume instanceof File && resume.size > 0) {
-      if (resume.type && resume.type !== "application/pdf") {
+      const allowedAttachmentTypes = new Set([
+        "application/pdf",
+        "application/msword",
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      ]);
+
+      if (resume.type && !allowedAttachmentTypes.has(resume.type)) {
         return NextResponse.json(
           {
             success: false,
-            error: "Only PDF attachments are allowed.",
+            error: "Only PDF and Word attachments are allowed.",
           },
           { status: 400,
             headers: corsHeaders,
