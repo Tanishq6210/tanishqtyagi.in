@@ -13,18 +13,33 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: "Tanishq Tyagi | Software Engineer",
   description:
-    "Portfolio of Tanishq Tyagi – Software Engineer",
+    "Backend Engineer specializing in distributed systems, scalable APIs, and data platforms.",
+  metadataBase: new URL("https://tanishqtyagi.in"),
   openGraph: {
     title: "Tanishq Tyagi | Software Engineer",
     description:
-      "Explore projects, experience, and skills in backend engineering, big data, and ML/NLP.",
+      "Backend Engineer specializing in distributed systems, scalable APIs, and data platforms.",
     url: "https://tanishqtyagi.in",
+    siteName: "Tanishq Tyagi Portfolio",
+    images: [
+      {
+        url: "https://tanishqtyagi.in/icon.jpg",
+        width: 1200,
+        height: 630,
+      },
+    ],
     type: "website",
   },
-  metadataBase:
-    typeof window === "undefined"
-      ? new URL("https://tanishqtyagi.in")
-      : undefined,
+  twitter: {
+    card: "summary_large_image",
+    title: "Tanishq Tyagi | Software Engineer",
+    description:
+      "Backend Engineer specializing in distributed systems, scalable APIs, and data platforms.",
+    images: ["https://tanishqtyagi.in/icon.jpg"],
+  },
+  icons: {
+    icon: "/icon.jpg",
+  },
 };
 
 export default function RootLayout({

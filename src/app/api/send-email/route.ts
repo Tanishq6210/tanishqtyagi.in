@@ -280,7 +280,8 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(
         {
           success: false,
-          error: "Turnstile verification failed.",
+          error:
+            "Sorry about that! The security check couldn’t be completed — please refresh and try again.",
         },
         {
           status: 400,
@@ -319,7 +320,8 @@ export async function POST(request: NextRequest) {
         return NextResponse.json(
           {
             success: false,
-            error: "Turnstile verification failed.",
+            error:
+              "Sorry—we couldn't complete the security check. Please refresh the page and fill out the form again.",
           },
           {
             status: 400,
@@ -332,7 +334,8 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(
         {
           success: false,
-          error: "Turnstile verification failed.",
+          error:
+            "Sorry—we couldn't complete the security check. Please refresh the page and fill out the form again.",
         },
         {
           status: 400,
