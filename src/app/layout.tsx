@@ -23,7 +23,7 @@ export const metadata: Metadata = {
     siteName: "Tanishq Tyagi Portfolio",
     images: [
       {
-        url: "https://tanishqtyagi.in/icon.jpg",
+        url: "https://tanishqtyagi.in/chat_gpt_banner.png",
         width: 1200,
         height: 630,
       },
@@ -35,7 +35,7 @@ export const metadata: Metadata = {
     title: "Tanishq Tyagi | Software Engineer",
     description:
       "Backend Engineer specializing in distributed systems, scalable APIs, and data platforms.",
-    images: ["https://tanishqtyagi.in/icon.jpg"],
+    images: ["https://tanishqtyagi.in/chat_gpt_banner.png"],
   },
   icons: {
     icon: "/icon.jpg",
