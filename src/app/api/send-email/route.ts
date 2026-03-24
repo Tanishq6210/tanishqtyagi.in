@@ -19,11 +19,22 @@ const redis = new Redis({
   token: process.env.TT_KV_REST_API_TOKEN!,
 });
 
-const RATE_LIMIT_WINDOW_SECONDS = 3600;
-const RATE_LIMIT_MAX_REQUESTS = 3;
-const DAILY_MAIL_QUOTA = 50;
+const RATE_LIMIT_WINDOW_SECONDS = process.env.RATE_LIMIT_WINDOW_SECONDS
+  ? parseInt(process.env.RATE_LIMIT_WINDOW_SECONDS, 10)
+  : 3600; // Default to 1 hour if not set or invalid.
+
+const RATE_LIMIT_MAX_REQUESTS = process.env.RATE_LIMIT_MAX_REQUESTS
+  ? parseInt(process.env.RATE_LIMIT_MAX_REQUESTS, 10)
+  : 3; // Default to 3 messages per IP per hour if not set or invalid.
+
+const DAILY_MAIL_QUOTA = process.env.DAILY_MAIL_QUOTA
+  ? parseInt(process.env.DAILY_MAIL_QUOTA, 10)
+  : 50; // Default to 50 emails per day if not set or invalid.
+
+
 const DAILY_QUOTA_ERROR_MESSAGE =
   "Today's mail quota is exhausted please try again tomorrow.";
+const MAIL_DISABLED_ERROR_MESSAGE = "Mail service temporarily disabled";
 const ALLOWED_ORIGINS = process.env.CORS_ALLOWED_ORIGINS ? process.env.CORS_ALLOWED_ORIGINS.split(",").map((origin) => origin.trim()) : [];
 
 const getTodayQuotaKey = () => {
@@ -84,6 +95,21 @@ export async function OPTIONS() {
 }
 
 export async function POST(request: NextRequest) {
+  const isMailEnabled = process.env.NEXT_PUBLIC_MAIL_ENABLED !== "false";
+
+  if (!isMailEnabled) {
+    return NextResponse.json(
+      {
+        success: false,
+        error: MAIL_DISABLED_ERROR_MESSAGE,
+      },
+      {
+        status: 503,
+        headers: corsHeaders,
+      },
+    );
+  }
+
   if (!process.env.RESEND_API_KEY) {
     return NextResponse.json(
       {

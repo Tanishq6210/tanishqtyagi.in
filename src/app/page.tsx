@@ -750,6 +750,10 @@ declare global {
 
 function ContactSection() {
   const TOAST_DURATION_MS = 5000;
+  const MAIL_PAUSED_INLINE_MESSAGE =
+    "Message requests are temporarily paused due to high request volume. Please reach out via LinkedIn";
+  const MAIL_PAUSED_BANNER_MESSAGE =
+    "Contact requests are temporarily paused. Please use alternate contact options.";
   const requiredMark = (
     <span aria-hidden="true" className="ml-1 text-[11px] text-red-400">
       *
@@ -772,6 +776,8 @@ function ContactSection() {
   const { showNotification } = useNotification();
 
   const siteKey = process.env.NEXT_PUBLIC_CLOUDFLARE_TURNSTILE_SITE_KEY;
+  const isMailEnabled = process.env.NEXT_PUBLIC_MAIL_ENABLED !== "false";
+  const isSubmitDisabled = status === "submitting" || !siteKey || !isMailEnabled;
 
   useEffect(() => {
     if (!siteKey) {
@@ -887,6 +893,12 @@ function ContactSection() {
   const isAvailableForWork = profile.availableForWork === true;
 
   async function submitForm(form: HTMLFormElement, token: string) {
+    if (!isMailEnabled) {
+      setStatus("error");
+      showApiErrorBanner(MAIL_PAUSED_BANNER_MESSAGE);
+      return;
+    }
+
     const formData = new FormData(form);
 
     formData.append("mode", modeRef.current === "referral" ? "referral" : "message");
@@ -907,6 +919,12 @@ function ContactSection() {
             error?: string;
           }
         | null;
+
+      if (response.status === 503) {
+        setStatus("error");
+        showApiErrorBanner(MAIL_PAUSED_BANNER_MESSAGE);
+        return;
+      }
 
       if (!response.ok || !data?.success) {
         setStatus("error");
@@ -1153,6 +1171,11 @@ function ContactSection() {
           onSubmit={async (event) => {
             event.preventDefault();
             setFormErrorMessage(null);
+            if (!isMailEnabled) {
+              setStatus("error");
+              showApiErrorBanner(MAIL_PAUSED_BANNER_MESSAGE);
+              return;
+            }
 
             const form = event.currentTarget;
             const formData = new FormData(form);
@@ -1227,9 +1250,22 @@ function ContactSection() {
           <div className="flex flex-col gap-3">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <div>
-                <h3 className="text-sm font-semibold text-slate-100">
-                  {isReferral ? "Ask for referral" : "Send a Message"}
-                </h3>
+                <div className="flex flex-wrap items-center gap-2">
+                  <h3 className="text-sm font-semibold text-slate-100">
+                    {isReferral ? "Ask for referral" : "Send a Message"}
+                  </h3>
+                  {!isMailEnabled && (
+                    <span
+                      role="status"
+                      className="inline-flex items-center gap-1.5 rounded-full border border-emerald-400/40 bg-emerald-500/10 px-3 py-1 text-xs font-medium text-emerald-300"
+                    >
+                      <span aria-hidden="true" className="paused-status-dot shrink-0 text-sm">
+                        ●
+                      </span>
+                      Temporarily Paused
+                    </span>
+                  )}
+                </div>
                 <p className="mt-1 text-xs text-slate-400">
                   {isReferral ? (
                     <>
@@ -1396,7 +1432,12 @@ function ContactSection() {
               <button
                 type="submit"
                 className="btn-primary hover:-translate-y-0.5 transform transition disabled:opacity-60 disabled:cursor-not-allowed"
-                disabled={status === "submitting" || !siteKey}
+                disabled={isSubmitDisabled}
+                title={
+                  !isMailEnabled
+                    ? "Temporarily unavailable due to high request volume"
+                    : undefined
+                }
               >
                 {status === "submitting"
                   ? (
@@ -1456,6 +1497,11 @@ function ContactSection() {
                 </div>
               )}
             </div>
+            {!isMailEnabled && (
+              <p className="mt-3 text-center text-[11px] text-slate-400">
+                {MAIL_PAUSED_INLINE_MESSAGE}
+              </p>
+            )}
           </div>
         </motion.form>
       </motion.div>
