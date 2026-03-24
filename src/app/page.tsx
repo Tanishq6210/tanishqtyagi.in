@@ -1497,6 +1497,9 @@ function ContactSection() {
                 </div>
               )}
             </div>
+            <p className="mt-2 text-[11px] text-slate-400">
+              Allowed formats: .pdf, .doc, .docx
+            </p>
             {!isMailEnabled && (
               <p className="mt-3 text-center text-[11px] text-slate-400">
                 {MAIL_PAUSED_INLINE_MESSAGE}
