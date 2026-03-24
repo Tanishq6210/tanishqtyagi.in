@@ -19,9 +19,9 @@ Your response: "{candidate_response}"
 
 I’ll review it and try to submit the referral within the next 2 days. Once done, you’ll receive a confirmation email from VISA.
 
-If you have any questions, feel free to append the email thread ✌️
+If you have any questions, feel free to append the email thread.
 
-Wishing you the very best for the opportunity — hope you make it big 🚀
+Wishing you the very best for the opportunity — hope you make it big!
 
 Warm regards,
 Tanishq Tyagi`,
@@ -30,12 +30,9 @@ Tanishq Tyagi`,
 
 Thanks for reaching out — I’ve received your message.
 
-Your Message:
-"{UserMessage}"
+Your Message: "{UserMessage}"
 
-I’ll review it and get back to you shortly ✌️
-
-Looking forward to connecting with you 🤝
+I’ll review it and get back to you shortly. Looking forward to connecting with you!
 
 Warm regards,
 Tanishq Tyagi`,
@@ -70,7 +67,7 @@ export const skills = [
       { name: "Microservices", isPrimary: true },
       { name: "JPA/Hibernate", isPrimary: true },
       { name: "Mockito", isPrimary: true},
-      { name: "Junit", isPrimary: true},
+      { name: "JUnit", isPrimary: true},
       { name: "OAuth", isPrimary: false},
       { name: "Authentication (JWT / OAuth)", isPrimary: false},
       { name: "Redis", isPrimary: false},
@@ -99,7 +96,7 @@ export const skills = [
     category: "Computer Science Fundamentals",
     items: [
       { name: "Data Structures & Algorigthms", isPrimary: true },
-      { name: "Object Oriented Programmign", isPrimary: true },
+      { name: "Object Oriented Programmig", isPrimary: true },
       { name: "Database Management Systems", isPrimary: true },
       { name: "Operating Systems", isPrimary: false },
     ],

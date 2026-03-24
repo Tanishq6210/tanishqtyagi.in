@@ -809,7 +809,7 @@ function ContactSection() {
           if (pendingSubmissionRef.current) {
             pendingSubmissionRef.current = false;
             showFormError(
-              "Turnstile verification failed. Please complete the verification and try again.",
+              "Sorry about that! The security check couldn’t be completed — please refresh the page and try again.",
             );
           }
         },
@@ -818,7 +818,7 @@ function ContactSection() {
           if (pendingSubmissionRef.current) {
             pendingSubmissionRef.current = false;
             showFormError(
-              "Turnstile verification timed out. Please try again.",
+              "Sorry about that! The security check couldn’t be completed — please refresh the page and try again.",
             );
           }
         },
