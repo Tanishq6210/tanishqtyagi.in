@@ -19,7 +19,7 @@ Your response: "{candidate_response}"
 
 I’ll review it and try to submit the referral within the next 2 days. Once done, you’ll receive a confirmation email from VISA.
 
-If you have any questions, feel free to append the email thread
+If you have any questions, feel free to append the email thread.
 
 Wishing you the very best for the opportunity — hope you make it big!
 
@@ -30,12 +30,9 @@ Tanishq Tyagi`,
 
 Thanks for reaching out — I’ve received your message.
 
-Your Message:
-"{UserMessage}"
+Your Message: "{UserMessage}"
 
-I’ll review it and get back to you shortly.
-
-Looking forward to connecting with you!
+I’ll review it and get back to you shortly. Looking forward to connecting with you!
 
 Warm regards,
 Tanishq Tyagi`,
