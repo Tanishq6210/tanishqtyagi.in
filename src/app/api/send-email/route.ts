@@ -19,9 +19,52 @@ const redis = new Redis({
   token: process.env.TT_KV_REST_API_TOKEN!,
 });
 
-const RATE_LIMIT_WINDOW_SECONDS = 3600;
-const RATE_LIMIT_MAX_REQUESTS = 3;
+const RATE_LIMIT_WINDOW_SECONDS = process.env.RATE_LIMIT_WINDOW_SECONDS
+  ? parseInt(process.env.RATE_LIMIT_WINDOW_SECONDS, 10)
+  : 3600; // Default to 1 hour if not set or invalid.
+
+const RATE_LIMIT_MAX_REQUESTS = process.env.RATE_LIMIT_MAX_REQUESTS
+  ? parseInt(process.env.RATE_LIMIT_MAX_REQUESTS, 10)
+  : 3; // Default to 3 messages per IP per hour if not set or invalid.
+
+const DAILY_MAIL_QUOTA = process.env.DAILY_MAIL_QUOTA
+  ? parseInt(process.env.DAILY_MAIL_QUOTA, 10)
+  : 50; // Default to 50 emails per day if not set or invalid.
+
+
+const DAILY_QUOTA_ERROR_MESSAGE =
+  "Today's mail quota is exhausted please try again tomorrow.";
+const MAIL_DISABLED_ERROR_MESSAGE = "Mail service temporarily disabled";
 const ALLOWED_ORIGINS = process.env.CORS_ALLOWED_ORIGINS ? process.env.CORS_ALLOWED_ORIGINS.split(",").map((origin) => origin.trim()) : [];
+
+const getTodayQuotaKey = () => {
+  const dateKey = new Date().toISOString().slice(0, 10);
+  return `email-daily:${dateKey}`;
+};
+
+const getSecondsUntilNextUtcDay = () => {
+  const now = new Date();
+  const nextUtcMidnight = Date.UTC(
+    now.getUTCFullYear(),
+    now.getUTCMonth(),
+    now.getUTCDate() + 1,
+    0,
+    0,
+    0,
+  );
+  return Math.max(1, Math.ceil((nextUtcMidnight - now.getTime()) / 1000));
+};
+
+const parseCounterValue = (value: unknown): number => {
+  if (typeof value === "number" && Number.isFinite(value)) {
+    return value;
+  }
+  if (typeof value === "string") {
+    const parsed = Number.parseInt(value, 10);
+    return Number.isNaN(parsed) ? 0 : parsed;
+  }
+  return 0;
+};
 
 const sendEmailSchema = z.object({
   name: z
@@ -52,6 +95,21 @@ export async function OPTIONS() {
 }
 
 export async function POST(request: NextRequest) {
+  const isMailEnabled = process.env.NEXT_PUBLIC_MAIL_ENABLED !== "false";
+
+  if (!isMailEnabled) {
+    return NextResponse.json(
+      {
+        success: false,
+        error: MAIL_DISABLED_ERROR_MESSAGE,
+      },
+      {
+        status: 503,
+        headers: corsHeaders,
+      },
+    );
+  }
+
   if (!process.env.RESEND_API_KEY) {
     return NextResponse.json(
       {
@@ -94,6 +152,28 @@ export async function POST(request: NextRequest) {
     }
   } catch (error) {
     console.error("Rate limiting failed; continuing without limit:", error);
+  }
+
+  const dailyQuotaKey = getTodayQuotaKey();
+
+  try {
+    const sentTodayRaw = await redis.get(dailyQuotaKey);
+    const sentToday = parseCounterValue(sentTodayRaw);
+
+    if (sentToday >= DAILY_MAIL_QUOTA) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: DAILY_QUOTA_ERROR_MESSAGE,
+        },
+        {
+          status: 429,
+          headers: corsHeaders,
+        },
+      );
+    }
+  } catch (error) {
+    console.error("Daily mail quota check failed; continuing without quota:", error);
   }
 
   const turnstileSecretKey = process.env.CLOUDFLARE_TURNSTILE_SECRET_KEY;
@@ -390,6 +470,15 @@ export async function POST(request: NextRequest) {
           headers: corsHeaders,
          },
       );
+    }
+
+    try {
+      const updatedCount = await redis.incr(dailyQuotaKey);
+      if (updatedCount === 1) {
+        await redis.expire(dailyQuotaKey, getSecondsUntilNextUtcDay());
+      }
+    } catch (error) {
+      console.error("Failed to update daily mail quota counter:", error);
     }
 
     return NextResponse.json({ success: true },{headers: corsHeaders});
