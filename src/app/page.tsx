@@ -751,7 +751,7 @@ declare global {
 function ContactSection() {
   const TOAST_DURATION_MS = 5000;
   const MAIL_PAUSED_INLINE_MESSAGE =
-    "Message requests are temporarily paused due to high request volume. Please reach out via LinkedIn";
+    "Messaging is temporarily paused due to high request volume. Please reach out via LinkedIn.";
   const MAIL_PAUSED_BANNER_MESSAGE =
     "Contact requests are temporarily paused. Please use alternate contact options.";
   const requiredMark = (
