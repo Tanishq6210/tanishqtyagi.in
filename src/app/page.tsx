@@ -64,6 +64,7 @@ function Navbar() {
   const [scrollProgress, setScrollProgress] = useState(0);
   const [theme, setTheme] = useState<"dark" | "light">("dark");
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
+  const isMailEnabled = process.env.NEXT_PUBLIC_MAIL_ENABLED !== "false";
 
   useEffect(() => {
     const onScroll = () => {
@@ -110,6 +111,33 @@ function Navbar() {
     setTheme((prev) => (prev === "dark" ? "light" : "dark"));
   };
 
+  const updateUrl = (url: URL) => {
+    const search = url.searchParams.toString();
+    const nextUrl = `${url.pathname}${search ? `?${search}` : ""}${url.hash}`;
+    window.history.replaceState({}, "", nextUrl);
+  };
+
+  const clearReferralIntent = () => {
+    if (typeof window === "undefined") return;
+    const url = new URL(window.location.href);
+    if (url.searchParams.get("mode") !== "referral") return;
+    url.searchParams.delete("mode");
+    updateUrl(url);
+  };
+
+  const handleReferralClick = () => {
+    if (typeof window === "undefined") return;
+    const url = new URL(window.location.href);
+    url.searchParams.set("mode", "referral");
+    url.hash = "contact";
+    updateUrl(url);
+    window.dispatchEvent(new Event("referral-intent-change"));
+    document.querySelector<HTMLElement>("#contact")?.scrollIntoView({
+      behavior: "smooth",
+    });
+    setIsMobileNavOpen(false);
+  };
+
   return (
     <>
       <div className="fixed left-0 top-0 z-50 h-[2px] w-full bg-transparent">
@@ -142,10 +170,24 @@ function Navbar() {
                 key={section.id}
                 href={`#${section.id}`}
                 className="nav-link"
+                onClick={() => {
+                  if (section.id === "contact") {
+                    clearReferralIntent();
+                  }
+                }}
               >
                 {section.label}
               </a>
             ))}
+            {isMailEnabled ? (
+              <button
+                type="button"
+                className="nav-link"
+                onClick={handleReferralClick}
+              >
+                Referral
+              </button>
+            ) : null}
           </nav>
           <div className="flex items-center gap-2">
             <button
@@ -198,11 +240,25 @@ function Navbar() {
                   key={section.id}
                   href={`#${section.id}`}
                   className="nav-link py-1.5"
-                  onClick={() => setIsMobileNavOpen(false)}
+                  onClick={() => {
+                    if (section.id === "contact") {
+                      clearReferralIntent();
+                    }
+                    setIsMobileNavOpen(false);
+                  }}
                 >
                   {section.label}
                 </a>
               ))}
+              {isMailEnabled ? (
+                <button
+                  type="button"
+                  className="nav-link py-1.5 text-left"
+                  onClick={handleReferralClick}
+                >
+                  Referral
+                </button>
+              ) : null}
             </nav>
           </div>
         )}
@@ -849,6 +905,28 @@ function ContactSection() {
   useEffect(() => {
     modeRef.current = mode;
   }, [mode]);
+
+  useEffect(() => {
+    const syncModeFromUrl = () => {
+      if (typeof window === "undefined") return;
+      const isReferralIntent =
+        window.location.hash === "#contact" &&
+        new URLSearchParams(window.location.search).get("mode") ===
+          "referral";
+      setMode(isReferralIntent ? "referral" : "message");
+    };
+
+    syncModeFromUrl();
+    window.addEventListener("hashchange", syncModeFromUrl);
+    window.addEventListener("popstate", syncModeFromUrl);
+    window.addEventListener("referral-intent-change", syncModeFromUrl);
+
+    return () => {
+      window.removeEventListener("hashchange", syncModeFromUrl);
+      window.removeEventListener("popstate", syncModeFromUrl);
+      window.removeEventListener("referral-intent-change", syncModeFromUrl);
+    };
+  }, []);
 
   const clearFormErrorTimer = () => {
     if (formErrorTimeoutRef.current !== null) {
